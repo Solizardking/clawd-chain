@@ -1,0 +1,9 @@
+*.json
+!package.json
+*keypair*
+.env
+.env.*
+ledger/
+test-ledger/
+data/
+.railway/
