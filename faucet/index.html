@@ -1,0 +1,14 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>clawd chain faucet</title>
+<style>body{font-family:system-ui;background:#0b0b0f;color:#eee;max-width:560px;margin:60px auto;padding:0 16px}input,button{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #333;background:#16161d;color:#eee;font-size:15px;box-sizing:border-box}button{background:#e8452c;border:0;font-weight:600;cursor:pointer}code{background:#16161d;padding:2px 6px;border-radius:4px}#out{white-space:pre-wrap;word-break:break-all}</style></head><body>
+<h1>🦞 clawd chain faucet</h1><p>Get {{AMOUNT}} CLAWD (test tokens, no value) per wallet every 24h.</p>
+<p>RPC: <code id="rpc">https://clawd-validator-production.up.railway.app</code></p>
+<input id="addr" placeholder="Your wallet address"><button id="go">Request {{AMOUNT}} CLAWD</button><div id="out"></div>
+<script>
+const out=document.getElementById('out'),go=document.getElementById('go');
+async function sha(s){return new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))}
+function lz(b){let n=0;for(const x of b){if(x===0){n+=8;continue}n+=Math.clz32(x)-24;break}return n}
+go.onclick=async()=>{go.disabled=true;try{out.textContent='Solving anti-bot challenge…';
+const {challenge,bits}=await (await fetch('/challenge')).json();let nonce=0;while(lz(await sha(challenge+':'+nonce))<bits)nonce++;
+out.textContent='Sending airdrop…';const r=await (await fetch('/airdrop',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({address:document.getElementById('addr').value.trim(),challenge,nonce})})).json();
+out.textContent=r.error?'Error: '+r.error:'Sent '+r.amount+' CLAWD\nSignature: '+r.signature}catch(e){out.textContent='Error: '+e.message}go.disabled=false}
+</script></body></html>

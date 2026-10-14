@@ -11,6 +11,6 @@ if [ ! -f /data/ledger/genesis.bin ]; then
 fi
 solana-test-validator --ledger /data/ledger --bind-address 0.0.0.0 \
   --rpc-port 8899 --limit-ledger-size 50000000 --quiet $CLONE &
-caddy run --config /etc/caddy/Caddyfile --adapter caddyfile &
+node /proxy.js &
 wait -n
 exit 1
