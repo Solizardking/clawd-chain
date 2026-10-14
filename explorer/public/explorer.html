@@ -1,0 +1,85 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>clawd explorer</title><link rel="icon" href="/logo.svg"><link rel="stylesheet" href="/style.css">
+<style>.search{display:flex;gap:10px;margin-bottom:22px}h1{margin:0 0 18px}.sub{color:var(--dim);font-size:13px}.err{color:var(--red)}
+.bar{height:46px;display:flex;align-items:flex-end;gap:3px;margin-top:8px}.bar i{flex:1;background:linear-gradient(var(--cy),var(--pur));border-radius:2px 2px 0 0;min-height:2px;transition:height .4s}</style></head><body>
+<nav><a class="brand" href="/"><img src="/logo.svg" width="34"> clawd <span class="sub" style="font-weight:600">explorer</span></a><span class="sp"></span><a href="/">Home</a><a class="on" href="/explorer">Explorer</a><a href="https://clawd-faucet-production.up.railway.app">Faucet</a><a href="https://github.com/Solizardking/clawd-chain">GitHub</a></nav>
+<div class="wrap"><form class="search" id="sf"><input id="q" placeholder="Search address, transaction signature or slot" autocomplete="off"><button class="btn hot">Search</button></form><div id="app"></div></div>
+<footer>clawd testnet explorer · data from the public clawd RPC · CLAWD has no monetary value</footer>
+<script>
+const VOTE='Vote111111111111111111111111111111111111111',LAM=1e9;
+const $=s=>document.querySelector(s),app=$('#app');
+const rpc=async(method,params=[])=>{const j=await (await fetch('/api/rpc',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({method,params})})).json();if(j.error)throw new Error(j.error.message);return j.result};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const short=s=>s.length>16?s.slice(0,6)+'…'+s.slice(-6):s;
+const A=a=>`<a class="mono" href="/address/${a}" title="${a}">${short(a)}</a>`,T=s=>`<a class="mono" href="/tx/${s}" title="${s}">${short(s)}</a>`,B=n=>`<a href="/block/${n}">${Number(n).toLocaleString()}</a>`;
+const cl=l=>(l/LAM).toLocaleString(undefined,{maximumFractionDigits:9})+' CLAWD';
+const ago=t=>{if(!t)return'';const s=Math.max(0,Math.round(Date.now()/1000-t));return s<60?s+'s ago':s<3600?Math.round(s/60)+'m ago':s<86400?Math.round(s/3600)+'h ago':new Date(t*1000).toLocaleString()};
+const keysOf=tx=>tx.transaction.message.accountKeys.map(k=>k.pubkey||k);
+let timers=[];const every=(f,ms)=>{f();timers.push(setInterval(f,ms))};
+function go(p){history.pushState(0,'',p);route()}
+document.addEventListener('click',e=>{const a=e.target.closest('a');if(a&&a.getAttribute('href')?.match(/^\/(explorer|tx|address|block)/)){e.preventDefault();go(a.getAttribute('href'))}});
+onpopstate=route;
+$('#sf').onsubmit=e=>{e.preventDefault();const q=$('#q').value.trim();if(!q)return;if(/^\d+$/.test(q))go('/block/'+q);else if(q.length>=80)go('/tx/'+q);else go('/address/'+q)};
+function route(){timers.forEach(clearInterval);timers=[];const [,k,v]=location.pathname.split('/');
+ if(k==='tx'&&v)return txPage(v);if(k==='address'&&v)return addrPage(v);if(k==='block'&&v)return blockPage(+v);home()}
+
+function home(){
+ app.innerHTML=`<div class="grid g4" style="margin-bottom:16px">
+ <div class="card stat"><div class="k"><span class="dot"></span> Slot</div><div class="v" id="s-slot">…</div></div>
+ <div class="card stat"><div class="k">Block height</div><div class="v" id="s-h">…</div></div>
+ <div class="card stat"><div class="k">Epoch</div><div class="v" id="s-ep">…</div><div class="sub" id="s-epp"></div></div>
+ <div class="card stat"><div class="k">TPS (live)</div><div class="v" id="s-tps">…</div><div class="bar" id="s-bar"></div></div>
+ <div class="card stat"><div class="k">Total transactions</div><div class="v" id="s-tx">…</div></div>
+ <div class="card stat"><div class="k">CLAWD supply</div><div class="v" id="s-sup">…</div></div>
+ <div class="card stat"><div class="k">Validator version</div><div class="v" id="s-ver" style="font-size:20px">…</div><div class="sub mono" id="s-gen"></div></div></div>
+ <div class="grid g2"><div class="card"><h3 style="margin-top:0">Latest blocks</h3><table><thead><tr><th>Slot</th><th>Txs</th><th>Leader / hash</th><th>Time</th></tr></thead><tbody id="blocks"></tbody></table></div>
+ <div class="card"><h3 style="margin-top:0">Latest transactions <span class="sub">(non-vote)</span></h3><table><thead><tr><th>Signature</th><th>Slot</th><th>Status</th><th>Fee</th></tr></thead><tbody id="txs"><tr><td colspan=4 class="sub">waiting for activity…</td></tr></tbody></table></div></div>`;
+ every(async()=>{try{const e=await rpc('getEpochInfo');$('#s-slot').textContent=e.absoluteSlot.toLocaleString();$('#s-h').textContent=(e.blockHeight||0).toLocaleString();$('#s-ep').textContent=e.epoch;$('#s-epp').textContent=(100*e.slotIndex/e.slotsInEpoch).toFixed(1)+'% through epoch';$('#s-tx').textContent=(e.transactionCount||0).toLocaleString()}catch(x){}},3000);
+ every(async()=>{try{const p=await rpc('getRecentPerformanceSamples',[20]);const r=p.map(s=>s.numTransactions/s.samplePeriodSecs).reverse();$('#s-tps').textContent=r.at(-1).toFixed(1);const m=Math.max(...r,1);$('#s-bar').innerHTML=r.map(v=>`<i style="height:${Math.max(4,100*v/m)}%"></i>`).join('')}catch(x){}},20000);
+ rpc('getSupply',[{excludeNonCirculatingAccountsList:true}]).then(s=>$('#s-sup').textContent=Math.round(s.value.total/LAM).toLocaleString()).catch(()=>{});
+ rpc('getVersion').then(v=>$('#s-ver').textContent='agave '+v['solana-core']).catch(()=>{});
+ $('#s-gen').textContent='genesis 8i2399…Zrep';
+ let last=0,seenTx=0;const rows=[],trows=[];
+ every(async()=>{try{const slot=await rpc('getSlot',[{commitment:'confirmed'}]);if(!last)last=slot-6;const want=[];for(let s=Math.max(last+1,slot-3);s<=slot;s++)want.push(s);last=slot;
+  for(const s of want){let b;try{b=await rpc('getBlock',[s,{commitment:'confirmed',maxSupportedTransactionVersion:0,rewards:false,transactionDetails:'full',encoding:'json'}])}catch{continue}if(!b)continue;
+   const real=b.transactions.filter(t=>!keysOf(t).includes(VOTE));
+   rows.unshift(`<tr class="new"><td>${B(s)}</td><td>${b.transactions.length}${real.length?` <span class="pill ok">${real.length} user</span>`:''}</td><td class="mono sub" title="${b.blockhash}">${short(b.blockhash)}</td><td class="sub">${ago(b.blockTime)}</td></tr>`);
+   for(const t of real){trows.unshift(`<tr class="new"><td>${T(t.transaction.signatures[0])}</td><td>${B(s)}</td><td>${t.meta.err?'<span class="pill bad">failed</span>':'<span class="pill ok">ok</span>'}</td><td>${(t.meta.fee/LAM).toFixed(6)}</td></tr>`);seenTx++}}
+  rows.splice(12);trows.splice(12);$('#blocks').innerHTML=rows.map(r=>r).join('');if(trows.length)$('#txs').innerHTML=trows.join('');setTimeout(()=>document.querySelectorAll('tr.new').forEach(r=>r.classList.remove('new')),1300)}catch(x){}},2500);
+}
+
+async function txPage(sig){app.innerHTML='<div class="card">Loading transaction…</div>';
+ try{const t=await rpc('getTransaction',[sig,{maxSupportedTransactionVersion:0,encoding:'jsonParsed',commitment:'confirmed'}]);
+ if(!t){app.innerHTML=`<div class="card"><h2>Transaction not found yet</h2><p class="sub mono">${esc(sig)}</p><p class="sub">It may still be confirming. Retrying…</p></div>`;timers.push(setTimeout(()=>txPage(sig),2500));return}
+ const keys=keysOf(t),m=t.meta;
+ const bal=keys.map((k,i)=>({k,d:m.postBalances[i]-m.preBalances[i],p:m.postBalances[i]})).filter(x=>x.d);
+ const ix=t.transaction.message.instructions.map((x,i)=>`<tr><td>#${i+1}</td><td>${A(x.programId)}</td><td>${esc(x.program||'')} ${esc(x.parsed?.type||'')}</td><td class="mono sub" style="white-space:normal">${x.parsed?esc(JSON.stringify(x.parsed.info)):esc((x.data||'').slice(0,80))}</td></tr>`).join('');
+ app.innerHTML=`<h1>Transaction</h1><div class="card kv">
+ <div>Signature</div><div class="mono">${esc(sig)}</div><div>Status</div><div>${m.err?'<span class="pill bad">failed</span> <span class="mono">'+esc(JSON.stringify(m.err))+'</span>':'<span class="pill ok">success</span>'}</div>
+ <div>Slot</div><div>${B(t.slot)}</div><div>Time</div><div>${t.blockTime?new Date(t.blockTime*1000).toLocaleString()+' ('+ago(t.blockTime)+')':'-'}</div>
+ <div>Fee</div><div>${cl(m.fee)}</div><div>Fee payer</div><div>${A(keys[0])}</div><div>Compute units</div><div>${m.computeUnitsConsumed??'-'}</div><div>Version</div><div>${t.version??'legacy'}</div></div>
+ <div class="card" style="margin-top:16px"><h3 style="margin-top:0">Balance changes</h3><table><tr><th>Account</th><th>Change</th><th>Post balance</th></tr>${bal.map(b=>`<tr><td>${A(b.k)}</td><td style="color:${b.d>0?'var(--grn)':'var(--red)'}">${b.d>0?'+':''}${cl(b.d)}</td><td>${cl(b.p)}</td></tr>`).join('')||'<tr><td class="sub" colspan=3>none</td></tr>'}</table></div>
+ <div class="card" style="margin-top:16px"><h3 style="margin-top:0">Instructions</h3><table><tr><th>#</th><th>Program</th><th>Type</th><th>Data</th></tr>${ix}</table></div>
+ <div class="card" style="margin-top:16px"><h3 style="margin-top:0">Logs</h3><pre>${esc((m.logMessages||[]).join('\n'))||'none'}</pre></div>`}catch(e){app.innerHTML=`<div class="card err">${esc(e.message)}</div>`}}
+
+async function addrPage(a){app.innerHTML='<div class="card">Loading account…</div>';
+ try{const [info,sigs]=await Promise.all([rpc('getAccountInfo',[a,{encoding:'base64'}]),rpc('getSignaturesForAddress',[a,{limit:25}])]);const v=info.value;
+ app.innerHTML=`<h1>Account</h1><div class="card kv"><div>Address</div><div class="mono">${esc(a)} <button class="btn" style="padding:3px 10px" onclick="navigator.clipboard.writeText('${esc(a)}')">Copy</button></div>
+ <div>Balance</div><div style="font-size:22px;font-weight:800" class="glow">${v?cl(v.lamports):'0 CLAWD'}</div>
+ <div>Owner</div><div>${v?A(v.owner):'<span class="sub">account does not exist yet</span>'}</div><div>Executable</div><div>${v?v.executable:'-'}</div>
+ <div>Data size</div><div>${v?(atob(v.data[0]).length).toLocaleString()+' bytes':'-'}</div><div>Rent epoch</div><div>${v?v.rentEpoch:'-'}</div></div>
+ <div class="card" style="margin-top:16px"><h3 style="margin-top:0">Recent transactions</h3><table><tr><th>Signature</th><th>Slot</th><th>Status</th><th>Time</th></tr>
+ ${sigs.map(s=>`<tr><td>${T(s.signature)}</td><td>${B(s.slot)}</td><td>${s.err?'<span class="pill bad">failed</span>':'<span class="pill ok">ok</span>'}</td><td class="sub">${ago(s.blockTime)}</td></tr>`).join('')||'<tr><td colspan=4 class="sub">no transactions</td></tr>'}</table></div>`}catch(e){app.innerHTML=`<div class="card err">${esc(e.message)}</div>`}}
+
+async function blockPage(n){app.innerHTML='<div class="card">Loading block…</div>';
+ try{const b=await rpc('getBlock',[n,{maxSupportedTransactionVersion:0,rewards:true,transactionDetails:'full',encoding:'json',commitment:'confirmed'}]);
+ if(!b){app.innerHTML='<div class="card">Block not available (skipped or not produced yet).</div>';return}
+ const tx=b.transactions.map(t=>({s:t.transaction.signatures[0],v:keysOf(t).includes(VOTE),e:t.meta.err,f:t.meta.fee,k:keysOf(t)[0]}));
+ app.innerHTML=`<h1>Block ${n.toLocaleString()}</h1><div class="card kv"><div>Slot</div><div>${n} &nbsp;<a href="/block/${n-1}">◀ prev</a> &nbsp;<a href="/block/${n+1}">next ▶</a></div>
+ <div>Blockhash</div><div class="mono">${b.blockhash}</div><div>Parent</div><div>${B(b.parentSlot)} <span class="mono sub">${b.previousBlockhash}</span></div>
+ <div>Block height</div><div>${b.blockHeight}</div><div>Time</div><div>${b.blockTime?new Date(b.blockTime*1000).toLocaleString():'-'}</div><div>Transactions</div><div>${tx.length} (${tx.filter(t=>!t.v).length} non-vote)</div>
+ <div>Rewards</div><div>${(b.rewards||[]).map(r=>A(r.pubkey)+' +'+cl(r.lamports)).join('<br>')||'-'}</div></div>
+ <div class="card" style="margin-top:16px"><h3 style="margin-top:0">Transactions</h3><table><tr><th>Signature</th><th>Type</th><th>Signer</th><th>Status</th><th>Fee</th></tr>
+ ${tx.sort((a,b)=>a.v-b.v).map(t=>`<tr><td>${T(t.s)}</td><td>${t.v?'<span class="sub">vote</span>':'user'}</td><td>${A(t.k)}</td><td>${t.e?'<span class="pill bad">failed</span>':'<span class="pill ok">ok</span>'}</td><td>${(t.f/LAM).toFixed(6)}</td></tr>`).join('')}</table></div>`}catch(e){app.innerHTML=`<div class="card err">${esc(e.message)}</div>`}}
+route();
+</script></body></html>

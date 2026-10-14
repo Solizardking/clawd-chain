@@ -1,0 +1,50 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>clawd chain: a public SVM playground</title><link rel="icon" href="/logo.svg"><link rel="stylesheet" href="/style.css">
+<style>
+.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:30px;align-items:center;padding:50px 0 30px}
+.hero h1{font-size:64px;line-height:1.02;margin:0 0 16px;font-weight:900}.hero p{color:var(--dim);font-size:18px;max-width:560px}
+.big{width:100%;max-width:380px;margin:auto;display:block;animation:bob 4s ease-in-out infinite;filter:drop-shadow(0 0 30px #ff3b5c66)}
+@keyframes bob{50%{transform:translateY(-14px) rotate(-3deg)}}
+.ep{display:flex;gap:10px;align-items:center;margin:10px 0}.ep code{flex:1;background:#0b0a15;border:1px solid var(--line);border-radius:10px;padding:11px 12px;overflow:auto;white-space:nowrap}
+.ep .lbl{width:44px;color:var(--dim);font-weight:700;font-size:12px}.ticker{display:flex;gap:28px;flex-wrap:wrap;margin-top:22px;color:var(--dim)}.ticker b{color:var(--txt);font-variant-numeric:tabular-nums}
+h2{font-size:26px;margin:40px 0 14px}.feat h3{margin:0 0 6px}.feat p{margin:0;color:var(--dim)}
+@media(max-width:860px){.hero{grid-template-columns:1fr}.hero h1{font-size:44px}}
+</style></head><body>
+<nav><a class="brand" href="/"><img src="/logo.svg" width="34"> clawd</a><span class="sp"></span><a class="on" href="/">Home</a><a href="/explorer">Explorer</a><a href="https://clawd-faucet-production.up.railway.app">Faucet</a><a href="https://github.com/Solizardking/clawd-chain">GitHub</a></nav>
+<div class="wrap">
+<section class="hero"><div>
+<h1>The <span class="glow">clawd</span> chain</h1>
+<p>A public, Solana-compatible chain anyone can build on. Same SVM, same tools, same wallets. Grab free CLAWD from the faucet, deploy programs, mint Metaplex Core NFTs, and break things without paying mainnet fees.</p>
+<div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:22px"><a class="btn hot" href="https://clawd-faucet-production.up.railway.app">Get CLAWD</a><a class="btn" href="/explorer">Open explorer</a><a class="btn" href="https://github.com/Solizardking/clawd-chain">GitHub</a></div>
+<div class="ticker"><span><span class="dot"></span> slot <b id="slot">…</b></span><span>epoch <b id="ep">…</b></span><span>TPS <b id="tps">…</b></span><span>txs <b id="txc">…</b></span></div>
+</div><img class="big" src="/logo.svg" alt="clawd lobster"></section>
+
+<div class="card"><h3 style="margin-top:0">Connect</h3>
+<div class="ep"><span class="lbl">RPC</span><code id="rpc">https://clawd-validator-production.up.railway.app</code><button class="btn" data-c="rpc">Copy</button></div>
+<div class="ep"><span class="lbl">WS</span><code id="ws">wss://clawd-validator-production.up.railway.app</code><button class="btn" data-c="ws">Copy</button></div>
+<div class="ep"><span class="lbl">CLI</span><code id="cli">solana config set --url https://clawd-validator-production.up.railway.app</code><button class="btn" data-c="cli">Copy</button></div>
+<div class="ep"><span class="lbl">Genesis</span><code id="gen">8i2399zceEMmybmzNwbz3S4tEX8qs1xnZPUxGvg2Zrep</code><button class="btn" data-c="gen">Copy</button></div>
+</div>
+
+<h2>What's inside</h2>
+<div class="grid g4 feat">
+<div class="card"><h3>⚡ Full SVM</h3><p>Agave runtime. Your Anchor programs, web3.js and the Solana CLI just work.</p></div>
+<div class="card"><h3>🦞 CLAWD gas</h3><p>The native coin, 9 decimals. Free from the faucet, 5 per wallet per day.</p></div>
+<div class="card"><h3>🎨 NFTs ready</h3><p>Metaplex Core and Core Candy Machine and Guard come preloaded at genesis.</p></div>
+<div class="card"><h3>🛡️ Fair use</h3><p>Rate-limited public RPC (about 40 req/10s per IP). Heavy scans are disabled.</p></div>
+</div>
+<h2>Quick start</h2>
+<pre>solana config set --url https://clawd-validator-production.up.railway.app
+solana-keygen new -o ~/clawd.json
+# grab CLAWD at the faucet, then:
+solana balance --keypair ~/clawd.json
+solana program deploy target/deploy/my_program.so</pre>
+</div>
+<footer>clawd is a test network. CLAWD has no monetary value. <a href="https://github.com/Solizardking/clawd-chain">Source</a></footer>
+<script>
+document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{navigator.clipboard.writeText(document.getElementById(b.dataset.c).textContent);b.textContent='Copied ✓';setTimeout(()=>b.textContent='Copy',1400)});
+const rpc=(method,params=[])=>fetch('/api/rpc',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({method,params})}).then(r=>r.json()).then(j=>j.result);
+async function tick(){try{const e=await rpc('getEpochInfo');slot.textContent=e.absoluteSlot.toLocaleString();ep.textContent=e.epoch;txc.textContent=(e.transactionCount||0).toLocaleString()}catch{}}
+async function perf(){try{const p=await rpc('getRecentPerformanceSamples',[5]);const t=p.reduce((a,s)=>a+s.numTransactions,0)/p.reduce((a,s)=>a+s.samplePeriodSecs,0);tps.textContent=t.toFixed(1)}catch{}}
+tick();perf();setInterval(tick,3000);setInterval(perf,20000);
+</script></body></html>

@@ -4,6 +4,7 @@ const PORT = +process.env.PORT || 8080;
 const RPC = process.env.VALIDATOR_RPC || 'http://clawd-validator.railway.internal:8080';
 const FAUCET_KEY = process.env.FAUCET_KEY || '';
 const SECRET = process.env.POW_SECRET || crypto.randomBytes(32).toString('hex');
+const EXPLORER = process.env.EXPLORER_URL || 'https://clawd-explorer-production.up.railway.app';
 const AMOUNT = +process.env.AIRDROP_SOL || 5, IP_CAP = +process.env.IP_CAP_SOL || 10;
 const DAY = 86_400_000, BITS = +process.env.POW_BITS || 20;
 const wallets = new Map(), ips = new Map(), used = new Set();
@@ -19,7 +20,7 @@ async function rpc(method, params) {
 }
 http.createServer((req, res) => {
   const url = new URL(req.url, 'http://x');
-  if (req.method === 'GET' && url.pathname === '/') { res.writeHead(200, { 'content-type': 'text/html' }); return res.end(page.replaceAll('{{AMOUNT}}', AMOUNT).replaceAll('{{BITS}}', BITS)); }
+  if (req.method === 'GET' && url.pathname === '/') { res.writeHead(200, { 'content-type': 'text/html' }); return res.end(page.replaceAll('{{AMOUNT}}', AMOUNT).replaceAll('{{BITS}}', BITS).replaceAll('{{EXPLORER}}', EXPLORER)); }
   if (req.method === 'GET' && url.pathname === '/health') return json(res, 200, { ok: true });
   if (req.method === 'GET' && url.pathname === '/challenge') { const c = `${Date.now()}.${crypto.randomBytes(8).toString('hex')}`; return json(res, 200, { challenge: `${c}.${sign(c)}`, bits: BITS }); }
   if (req.method === 'POST' && url.pathname === '/airdrop') {
