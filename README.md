@@ -7,9 +7,9 @@ Metaplex Core, Core Candy Machine and Core Candy Guard are preloaded (cloned fro
 > Test/dev-grade network: one validator, no bridge, tokens have no monetary value. State may be reset.
 
 ## Endpoints
-- RPC: `https://clawd-validator-production.up.railway.app`
-- WebSocket: `wss://clawd-validator-production.up.railway.app`
-- Faucet: **https://clawd-faucet-production.up.railway.app** (5 CLAWD per wallet per 24h, 10 per IP per 24h, proof-of-work anti-bot)
+- RPC: `https://rpc.clawdchain.trade`
+- WebSocket: `wss://rpc.clawdchain.trade`
+- Faucet: **https://faucet.clawdchain.trade** (5 CLAWD per wallet per 24h, 10 per IP per 24h, proof-of-work anti-bot)
 - Genesis hash: `7nu7q65M7dhJu9j6Zo1XkL4VRfMdg8544Xy62KR8TiHY`
 
 ## Public RPC limits
@@ -17,7 +17,7 @@ Metaplex Core, Core Candy Machine and Core Candy Guard are preloaded (cloned fro
 - Disabled: `getProgramAccounts`, `getLargestAccounts`, `requestAirdrop` (use the faucet)
 
 ```bash
-solana config set --url https://clawd-validator-production.up.railway.app
+solana config set --url https://rpc.clawdchain.trade
 solana cluster-version
 ```
 

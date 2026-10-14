@@ -10,19 +10,19 @@
 h2{font-size:26px;margin:40px 0 14px}.feat h3{margin:0 0 6px}.feat p{margin:0;color:var(--dim)}
 @media(max-width:860px){.hero{grid-template-columns:1fr}.hero h1{font-size:44px}}
 </style></head><body>
-<nav><a class="brand" href="/"><img src="/logo.svg" width="34"> clawd</a><span class="sp"></span><a class="on" href="/">Home</a><a href="/explorer">Explorer</a><a href="https://clawd-faucet-production.up.railway.app">Faucet</a><a href="https://github.com/Solizardking/clawd-chain">GitHub</a></nav>
+<nav><a class="brand" href="/"><img src="/logo.svg" width="34"> clawd</a><span class="sp"></span><a class="on" href="/">Home</a><a href="/explorer">Explorer</a><a href="https://faucet.clawdchain.trade">Faucet</a><a href="https://github.com/Solizardking/clawd-chain">GitHub</a></nav>
 <div class="wrap">
 <section class="hero"><div>
 <h1>The <span class="glow">clawd</span> chain</h1>
 <p>A public, Solana-compatible chain anyone can build on. Same SVM, same tools, same wallets. Grab free CLAWD from the faucet, deploy programs, mint Metaplex Core NFTs, and break things without paying mainnet fees.</p>
-<div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:22px"><a class="btn hot" href="https://clawd-faucet-production.up.railway.app">Get CLAWD</a><a class="btn" href="/explorer">Open explorer</a><a class="btn" href="https://github.com/Solizardking/clawd-chain">GitHub</a></div>
+<div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:22px"><a class="btn hot" href="https://faucet.clawdchain.trade">Get CLAWD</a><a class="btn" href="/explorer">Open explorer</a><a class="btn" href="https://github.com/Solizardking/clawd-chain">GitHub</a></div>
 <div class="ticker"><span><span class="dot"></span> slot <b id="slot">…</b></span><span>epoch <b id="ep">…</b></span><span>TPS <b id="tps">…</b></span><span>txs <b id="txc">…</b></span></div>
 </div><img class="big" src="/logo.svg" alt="clawd lobster"></section>
 
 <div class="card"><h3 style="margin-top:0">Connect</h3>
-<div class="ep"><span class="lbl">RPC</span><code id="rpc">https://clawd-validator-production.up.railway.app</code><button class="btn" data-c="rpc">Copy</button></div>
-<div class="ep"><span class="lbl">WS</span><code id="ws">wss://clawd-validator-production.up.railway.app</code><button class="btn" data-c="ws">Copy</button></div>
-<div class="ep"><span class="lbl">CLI</span><code id="cli">solana config set --url https://clawd-validator-production.up.railway.app</code><button class="btn" data-c="cli">Copy</button></div>
+<div class="ep"><span class="lbl">RPC</span><code id="rpc">https://rpc.clawdchain.trade</code><button class="btn" data-c="rpc">Copy</button></div>
+<div class="ep"><span class="lbl">WS</span><code id="ws">wss://rpc.clawdchain.trade</code><button class="btn" data-c="ws">Copy</button></div>
+<div class="ep"><span class="lbl">CLI</span><code id="cli">solana config set --url https://rpc.clawdchain.trade</code><button class="btn" data-c="cli">Copy</button></div>
 <div class="ep"><span class="lbl">Genesis</span><code id="gen">7nu7q65M7dhJu9j6Zo1XkL4VRfMdg8544Xy62KR8TiHY</code><button class="btn" data-c="gen">Copy</button></div>
 </div>
 
@@ -34,7 +34,7 @@ h2{font-size:26px;margin:40px 0 14px}.feat h3{margin:0 0 6px}.feat p{margin:0;co
 <div class="card"><h3>🛡️ Fair use</h3><p>Rate-limited public RPC (about 40 req/10s per IP). Heavy scans are disabled.</p></div>
 </div>
 <h2>Quick start</h2>
-<pre>solana config set --url https://clawd-validator-production.up.railway.app
+<pre>solana config set --url https://rpc.clawdchain.trade
 solana-keygen new -o ~/clawd.json
 # grab CLAWD at the faucet, then:
 solana balance --keypair ~/clawd.json

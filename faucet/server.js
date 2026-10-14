@@ -4,7 +4,7 @@ const PORT = +process.env.PORT || 8080;
 const RPC = process.env.VALIDATOR_RPC || 'http://clawd-validator.railway.internal:8080';
 const FAUCET_KEY = process.env.FAUCET_KEY || '';
 const SECRET = process.env.POW_SECRET || crypto.randomBytes(32).toString('hex');
-const EXPLORER = process.env.EXPLORER_URL || 'https://clawd-explorer-production.up.railway.app';
+const EXPLORER = process.env.EXPLORER_URL || 'https://clawdchain.trade';
 const AMOUNT = +process.env.AIRDROP_SOL || 5, IP_CAP = +process.env.IP_CAP_SOL || 10;
 const DAY = 86_400_000, BITS = +process.env.POW_BITS || 20;
 const wallets = new Map(), ips = new Map(), used = new Set();
