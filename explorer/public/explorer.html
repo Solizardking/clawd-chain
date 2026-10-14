@@ -38,7 +38,7 @@ function home(){
  every(async()=>{try{const p=await rpc('getRecentPerformanceSamples',[20]);const r=p.map(s=>s.numTransactions/s.samplePeriodSecs).reverse();$('#s-tps').textContent=r.at(-1).toFixed(1);const m=Math.max(...r,1);$('#s-bar').innerHTML=r.map(v=>`<i style="height:${Math.max(4,100*v/m)}%"></i>`).join('')}catch(x){}},20000);
  rpc('getSupply',[{excludeNonCirculatingAccountsList:true}]).then(s=>$('#s-sup').textContent=Math.round(s.value.total/LAM).toLocaleString()).catch(()=>{});
  rpc('getVersion').then(v=>$('#s-ver').textContent='agave '+v['solana-core']).catch(()=>{});
- $('#s-gen').textContent='genesis 8i2399…Zrep';
+ rpc('getGenesisHash').then(g=>$('#s-gen').textContent='genesis '+g.slice(0,6)+'…'+g.slice(-4)).catch(()=>{});
  let last=0,seenTx=0;const rows=[],trows=[];
  every(async()=>{try{const slot=await rpc('getSlot',[{commitment:'confirmed'}]);if(!last)last=slot-6;const want=[];for(let s=Math.max(last+1,slot-3);s<=slot;s++)want.push(s);last=slot;
   for(const s of want){let b;try{b=await rpc('getBlock',[s,{commitment:'confirmed',maxSupportedTransactionVersion:0,rewards:false,transactionDetails:'full',encoding:'json'}])}catch{continue}if(!b)continue;

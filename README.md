@@ -10,7 +10,7 @@ Metaplex Core, Core Candy Machine and Core Candy Guard are preloaded (cloned fro
 - RPC: `https://clawd-validator-production.up.railway.app`
 - WebSocket: `wss://clawd-validator-production.up.railway.app`
 - Faucet: **https://clawd-faucet-production.up.railway.app** (5 CLAWD per wallet per 24h, 10 per IP per 24h, proof-of-work anti-bot)
-- Genesis hash: `8i2399zceEMmybmzNwbz3S4tEX8qs1xnZPUxGvg2Zrep`
+- Genesis hash: `7nu7q65M7dhJu9j6Zo1XkL4VRfMdg8544Xy62KR8TiHY`
 
 ## Public RPC limits
 - ~40 requests / 10s per IP (batches count per call, max 10 per batch), 5 concurrent WebSockets per IP
