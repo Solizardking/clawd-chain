@@ -90,4 +90,4 @@ $('go').onclick=async()=>{const address=$('addr').value.trim();out.className='';
   else{main.className='';out.className='errm';out.textContent=r.error||'faucet error'}}
  catch(e){main.className='';out.className='errm';out.textContent='Network error, try again'}
  speed=1;$('go').disabled=false};
-</script></body></html>
+</script><script src="{{EXPLORER}}/webmcp.js" defer></script></body></html>

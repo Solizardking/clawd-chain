@@ -7,7 +7,7 @@ const ALLOW = new Set(['getSlot','getEpochInfo','getRecentPerformanceSamples','g
 const TTL = { getSlot: 1500, getEpochInfo: 2000, getRecentPerformanceSamples: 10000, getSupply: 30000, getVersion: 60000, getTransactionCount: 3000,
   getBlockHeight: 2000, getHealth: 3000, getGenesisHash: 600000, getClusterNodes: 60000, getBlock: 600000, getTransaction: 600000, getBlocks: 2000 };
 const cache = new Map(), inflight = new Map(), hits = new Map();
-const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png' };
+const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.json': 'application/json', '.txt': 'text/plain; charset=utf-8' };
 async function call(method, params) {
   const key = method + JSON.stringify(params || []);
   const c = cache.get(key); if (c && Date.now() < c.exp) return c.v;

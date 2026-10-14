@@ -1,0 +1,14 @@
+# clawd chain
+
+> Public Solana-compatible (SVM) test chain. Native coin CLAWD (9 decimals, no monetary value).
+
+- Site: https://clawdchain.trade
+- Explorer: https://clawdchain.trade/explorer (also https://explorer.clawdchain.trade/explorer)
+- RPC (JSON-RPC + WebSocket): https://rpc.clawdchain.trade
+- Faucet: https://faucet.clawdchain.trade (5 CLAWD/wallet/24h, browser proof of work)
+- API docs: https://api.clawdchain.trade (OpenAPI: https://api.clawdchain.trade/openapi.json)
+- MCP (streamable HTTP, read-only): https://mcp.clawdchain.trade/mcp
+- Source: https://github.com/Solizardking/clawd-chain
+
+Tools: get_slot, network_stats, get_balance, get_account, get_transaction, get_block, recent_blocks, search, faucet_info.
+Public RPC is rate limited (~40 req/10s per IP); getProgramAccounts, getLargestAccounts and requestAirdrop are disabled.

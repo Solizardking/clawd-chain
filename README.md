@@ -58,3 +58,12 @@ To reset the chain, set the `LEDGER_RESET_TOKEN` variable on clawd-validator to 
 - `faucet/` – faucet service (web page, `/challenge`, `POST /airdrop`)
 
 Inspired by [abklabs/svmkit](https://github.com/abklabs/svmkit).
+
+## API, MCP and agents
+
+- API docs (OpenAPI + interactive): https://api.clawdchain.trade (spec at `/openapi.json`)
+- Remote MCP server (streamable HTTP, read-only, 30 req/10s per IP): https://mcp.clawdchain.trade/mcp
+  Tools: get_slot, network_stats, get_balance, get_account, get_transaction, get_block, recent_blocks, search, faucet_info. No tool solves the faucet PoW or requests funds.
+- WebMCP: landing, explorer and faucet pages register the same read tools via `navigator.modelContext` when available.
+- Discovery: https://clawdchain.trade/llms.txt and https://clawdchain.trade/.well-known/mcp.json
+- Source: `api/` (Railway service clawd-api)
