@@ -49,7 +49,7 @@ railway domain -s clawd-faucet
 ```
 The faucet reaches the validator over Railway's private network; `FAUCET_KEY` lets it bypass the public gateway limits. Never commit it.
 Recommended: Railway Pro, ~4 vCPU / 8 GB RAM. Only `$PORT` (the gateway) is public; the faucet (9900) and gossip/TPU stay private.
-To reset the chain, set the `LEDGER_RESET_TOKEN` variable on clawd-validator to a new value and redeploy (wipes the ledger once). `LEDGER_LIMIT` (default 250000 shreds) caps ledger size.
+To reset the chain, set the `LEDGER_RESET_TOKEN` variable on clawd-validator to a new value and redeploy (wipes the ledger once). `LEDGER_LIMIT` (default 100000 shreds) caps ledger size. `start.sh` also supervises disk use: at `DISK_PURGE_PCT` (70%) it stops the validator, purges + compacts slots below the latest snapshot and restarts; above `DISK_HARD_PCT` (85%) it drops the blockstore and restarts from the latest snapshot (state kept). Set `LEDGER_RECOVER_TOKEN` to a new value to do that recovery once on boot.
 
 ## Files
 - `Dockerfile` – Debian + Agave release binaries + Node.js
