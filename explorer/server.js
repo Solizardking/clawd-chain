@@ -6,6 +6,8 @@ const ALLOW = new Set(['getSlot','getEpochInfo','getRecentPerformanceSamples','g
   'getAccountInfo','getBalance','getSignaturesForAddress','getSupply','getVersion','getBlockHeight','getTransactionCount','getHealth','getGenesisHash','getClusterNodes','getSignatureStatuses']);
 const TTL = { getSlot: 1500, getEpochInfo: 2000, getRecentPerformanceSamples: 10000, getSupply: 30000, getVersion: 60000, getTransactionCount: 3000,
   getBlockHeight: 2000, getHealth: 3000, getGenesisHash: 600000, getClusterNodes: 60000, getBlock: 600000, getTransaction: 600000, getBlocks: 2000 };
+const MCP_MANIFEST = { name: 'clawd-chain', description: 'Read-only tools for the clawd SVM chain', transport: { type: 'streamable-http', url: 'https://mcp.clawdchain.trade/mcp' }, endpoints: { mcp: 'https://mcp.clawdchain.trade/mcp' },
+  tools: ['get_slot','network_stats','get_balance','get_account','get_transaction','get_block','recent_blocks','search','faucet_info'], docs: 'https://api.clawdchain.trade', llms: 'https://clawdchain.trade/llms.txt' };
 const cache = new Map(), inflight = new Map(), hits = new Map();
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.json': 'application/json', '.txt': 'text/plain; charset=utf-8' };
 async function call(method, params) {
@@ -38,9 +40,9 @@ http.createServer((req, res) => {
     });
     return;
   }
+  if (url.pathname === '/.well-known/mcp.json' || url.pathname === '/.well-known/mcp' || url.pathname === '/mcp.json') { res.writeHead(200, { 'content-type': 'application/json', 'access-control-allow-origin': '*' }); return res.end(JSON.stringify(MCP_MANIFEST, null, 2)); }
   let p = url.pathname;
   if (p === '/' ) p = '/index.html';
-  else if (p === '/.well-known/mcp.json' || p === '/.well-known/mcp') p = '/mcp.json';
   else if (/^\/(explorer|tx|address|block)(\/|$)/.test(p)) p = '/explorer.html';
   const f = path.join(__dirname, 'public', path.normalize(p).replace(/^(\.\.[\/\\])+/, ''));
   fs.readFile(f, (e, d) => { if (e) { res.writeHead(404, { 'content-type': 'text/plain' }); return res.end('not found'); }

@@ -1,6 +1,5 @@
 *.json
 !package.json
-!explorer/public/mcp.json
 *keypair*
 .env
 .env.*
