@@ -40,6 +40,7 @@ http.createServer((req, res) => {
   }
   let p = url.pathname;
   if (p === '/' ) p = '/index.html';
+  else if (p === '/.well-known/mcp.json' || p === '/.well-known/mcp') p = '/mcp.json';
   else if (/^\/(explorer|tx|address|block)(\/|$)/.test(p)) p = '/explorer.html';
   const f = path.join(__dirname, 'public', path.normalize(p).replace(/^(\.\.[\/\\])+/, ''));
   fs.readFile(f, (e, d) => { if (e) { res.writeHead(404, { 'content-type': 'text/plain' }); return res.end('not found'); }
