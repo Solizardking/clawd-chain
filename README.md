@@ -67,3 +67,10 @@ Inspired by [abklabs/svmkit](https://github.com/abklabs/svmkit).
 - WebMCP: landing, explorer and faucet pages register the same read tools via `navigator.modelContext` when available.
 - Discovery: https://clawdchain.trade/llms.txt and https://clawdchain.trade/.well-known/mcp.json
 - Source: `api/` (Railway service clawd-api)
+
+
+## Clawd Chain Wallet
+
+Local-custody Chrome wallet for this chain. The seed stays on the device. Release: https://github.com/Solizardking/clawd-chain-wallet/releases/tag/v1.0.0
+
+The animated README runs on the explorer and mounts that wallet: https://clawdchain.trade/readme
