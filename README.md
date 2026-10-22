@@ -22,6 +22,9 @@ Clawd Chain is that playbook, run end to end by an agent:
 
 **Where it runs:** production's validator runs on a dedicated **Hetzner** host. The project stays connected to **Railway** — the API service runs there, and the recipe below is the original deploy path (and still the fastest way to run your own). The chain graduated; the recipe remains.
 
+## 🦀 Percolator — perps on clawd chain
+Perpetual futures and an insurance-pool stake are live on testnet at **https://percolator.clawdchain.trade**. Program IDs, a how-to and on-chain proof: **[docs/percolator.md](docs/percolator.md)**.
+
 ## Endpoints
 - Explorer: https://clawdchain.trade (also https://explorer.clawdchain.trade)
 - RPC: `https://rpc.clawdchain.trade`
