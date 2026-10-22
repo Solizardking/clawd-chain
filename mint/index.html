@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Clawd public mint</title>
+  <style>
+    :root { color-scheme: dark; --bg:#07060d; --panel:#141127; --line:#2a2346; --txt:#e9e6ff; --dim:#8c86b3; --cy:#2ef2ff; --red:#ff3b5c; --org:#ff8a3d; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100vh; background: radial-gradient(900px 500px at 10% -10%, #ff3b5c22, transparent), var(--bg); color: var(--txt); font: 16px/1.5 ui-sans-serif, system-ui, sans-serif; }
+    main { max-width: 760px; margin: 0 auto; padding: 32px 20px 64px; display: grid; gap: 16px; }
+    h1 { font-size: 40px; margin: 0; }
+    .glow { background: linear-gradient(90deg, var(--red), var(--org), var(--cy)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    section { background: linear-gradient(180deg, #141127, #0d0b18); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
+    label { display: grid; gap: 6px; margin-bottom: 12px; }
+    input { width: 100%; background: #0b0a15; color: var(--txt); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+    button { border: 0; border-radius: 12px; padding: 12px 16px; font-weight: 800; color: #0b0710; background: linear-gradient(90deg, var(--red), var(--org)); cursor: pointer; }
+    #file-help[hidden] { display: none; }
+    #file-help { border-color: var(--org); }
+    code { font-family: ui-monospace, monospace; color: var(--cy); }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p>Clawd Chain · public mint</p>
+      <h1 class="glow">Mint without the creator key</h1>
+      <p>The creator opens the collection. Any other wallet can mint until the supply cap is met or the sale is closed. The asset keeps the collection name, and the minter becomes the owner.</p>
+    </header>
+    <section id="file-help" hidden>
+      <h2>Open this page over HTTP</h2>
+      <p>A <code>file:</code> URL cannot load the mint rules in every browser. From the repo root run <code>python3 -m http.server 8787</code> and open <code>http://127.0.0.1:8787/mint/</code>.</p>
+    </section>
+    <section>
+      <form id="mint-form">
+        <label>Collection name<input id="name" name="name" type="text" value="Public Clawd"></label>
+        <label>Your wallet (minter)<input id="minter" name="minter" type="text" autocomplete="off" placeholder="Wallet address that is not the creator"></label>
+        <label>Supply cap<input id="cap" name="cap" type="number" min="1" value="100"></label>
+        <button id="mint-button" type="submit">Mint</button>
+      </form>
+      <p id="result">The creator key is not required. Enter a minter and mint.</p>
+    </section>
+  </main>
+  <script src="../chain/public-mint.js"></script>
+  <script src="mint.js"></script>
+</body>
+</html>

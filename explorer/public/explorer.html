@@ -2,9 +2,10 @@
 <title>clawd explorer</title><link rel="icon" href="/logo.svg"><link rel="stylesheet" href="/style.css">
 <style>.search{display:flex;gap:10px;margin-bottom:22px}h1{margin:0 0 18px}.sub{color:var(--dim);font-size:13px}.err{color:var(--red)}
 .bar{height:46px;display:flex;align-items:flex-end;gap:3px;margin-top:8px}.bar i{flex:1;background:linear-gradient(var(--cy),var(--pur));border-radius:2px 2px 0 0;min-height:2px;transition:height .4s}</style></head><body>
-<nav><a class="brand" href="/"><img src="/logo.svg" width="34"> clawd <span class="sub" style="font-weight:600">explorer</span></a><span class="sp"></span><a href="/">Home</a><a class="on" href="/explorer">Explorer</a><a href="https://faucet.clawdchain.trade">Faucet</a><a href="https://api.clawdchain.trade">API</a><a href="https://github.com/Solizardking/clawd-chain">GitHub</a></nav>
+<nav><a class="brand" href="/"><img src="/logo.svg" width="34"> clawd <span class="sub" style="font-weight:600">explorer</span></a><span class="sp"></span><a href="/">Home</a><a class="on" href="/explorer">Explorer</a><a class="btn hot" href="https://launch.clawdchain.trade">Launchpad</a><a href="https://launch.clawdchain.trade" hidden>Launchpad</a><a href="/readme">Wallet</a><a href="https://faucet.clawdchain.trade">Faucet</a><a href="https://api.clawdchain.trade">API</a><a href="https://github.com/Solizardking/clawd-chain">GitHub</a></nav>
 <div class="wrap"><form class="search" id="sf"><input id="q" placeholder="Search address, transaction signature or slot" autocomplete="off"><button class="btn hot">Search</button></form><div id="app"></div></div>
 <footer>clawd testnet explorer · data from the public clawd RPC · CLAWD has no monetary value</footer>
+<script src="/chain.js"></script>
 <script>
 const VOTE='Vote111111111111111111111111111111111111111',LAM=1e9;
 const $=s=>document.querySelector(s),app=$('#app');
@@ -19,7 +20,7 @@ let timers=[];const every=(f,ms)=>{f();timers.push(setInterval(f,ms))};
 function go(p){history.pushState(0,'',p);route()}
 document.addEventListener('click',e=>{const a=e.target.closest('a');if(a&&a.getAttribute('href')?.match(/^\/(explorer|tx|address|block)/)){e.preventDefault();go(a.getAttribute('href'))}});
 onpopstate=route;
-$('#sf').onsubmit=e=>{e.preventDefault();const q=$('#q').value.trim();if(!q)return;if(/^\d+$/.test(q))go('/block/'+q);else if(q.length>=80)go('/tx/'+q);else go('/address/'+q)};
+$('#sf').onsubmit=e=>{e.preventDefault();const q=$('#q').value.trim();if(!q)return;go(ClawdChain.classifyQuery(q).path)};
 function route(){timers.forEach(clearInterval);timers=[];const [,k,v]=location.pathname.split('/');
  if(k==='tx'&&v)return txPage(v);if(k==='address'&&v)return addrPage(v);if(k==='block'&&v)return blockPage(+v);home()}
 
@@ -53,21 +54,28 @@ async function txPage(sig){app.innerHTML='<div class="card">Loading transaction�
  if(!t){app.innerHTML=`<div class="card"><h2>Transaction not found yet</h2><p class="sub mono">${esc(sig)}</p><p class="sub">It may still be confirming. Retrying…</p></div>`;timers.push(setTimeout(()=>txPage(sig),2500));return}
  const keys=keysOf(t),m=t.meta;
  const bal=keys.map((k,i)=>({k,d:m.postBalances[i]-m.preBalances[i],p:m.postBalances[i]})).filter(x=>x.d);
- const ix=t.transaction.message.instructions.map((x,i)=>`<tr><td>#${i+1}</td><td>${A(x.programId)}</td><td>${esc(x.program||'')} ${esc(x.parsed?.type||'')}</td><td class="mono sub" style="white-space:normal">${x.parsed?esc(JSON.stringify(x.parsed.info)):esc((x.data||'').slice(0,80))}</td></tr>`).join('');
+ const deltas=ClawdChain.tokenDeltas(m.preTokenBalances,m.postTokenBalances);
+ const ix=t.transaction.message.instructions.map((x,i)=>`<tr><td>#${i+1}</td><td>${esc(ClawdChain.programLabel(x.programId))} ${A(x.programId)}</td><td>${esc(x.program||'')} ${esc(x.parsed?.type||'')}</td><td class="mono sub" style="white-space:normal">${x.parsed?esc(JSON.stringify(x.parsed.info)):esc((x.data||'').slice(0,80))}</td></tr>`).join('');
  app.innerHTML=`<h1>Transaction</h1><div class="card kv">
  <div>Signature</div><div class="mono">${esc(sig)}</div><div>Status</div><div>${m.err?'<span class="pill bad">failed</span> <span class="mono">'+esc(JSON.stringify(m.err))+'</span>':'<span class="pill ok">success</span>'}</div>
  <div>Slot</div><div>${B(t.slot)}</div><div>Time</div><div>${t.blockTime?new Date(t.blockTime*1000).toLocaleString()+' ('+ago(t.blockTime)+')':'-'}</div>
  <div>Fee</div><div>${cl(m.fee)}</div><div>Fee payer</div><div>${A(keys[0])}</div><div>Compute units</div><div>${m.computeUnitsConsumed??'-'}</div><div>Version</div><div>${t.version??'legacy'}</div></div>
  <div class="card" style="margin-top:16px"><h3 style="margin-top:0">Balance changes</h3><table><tr><th>Account</th><th>Change</th><th>Post balance</th></tr>${bal.map(b=>`<tr><td>${A(b.k)}</td><td style="color:${b.d>0?'var(--grn)':'var(--red)'}">${b.d>0?'+':''}${cl(b.d)}</td><td>${cl(b.p)}</td></tr>`).join('')||'<tr><td class="sub" colspan=3>none</td></tr>'}</table></div>
+ <div class="card" style="margin-top:16px"><h3 style="margin-top:0">Token balance changes</h3><table><tr><th>Mint</th><th>Owner</th><th>Decimals</th><th>Delta</th></tr>${deltas.map(d=>`<tr><td class="mono">${esc(d.mint)}</td><td>${d.owner?A(d.owner):''}</td><td>${esc(d.decimals)}</td><td class="mono">${esc(d.delta)}</td></tr>`).join('')||'<tr><td class="sub" colspan=4>none</td></tr>'}</table></div>
  <div class="card" style="margin-top:16px"><h3 style="margin-top:0">Instructions</h3><table><tr><th>#</th><th>Program</th><th>Type</th><th>Data</th></tr>${ix}</table></div>
  <div class="card" style="margin-top:16px"><h3 style="margin-top:0">Logs</h3><pre>${esc((m.logMessages||[]).join('\n'))||'none'}</pre></div>`}catch(e){app.innerHTML=`<div class="card err">${esc(e.message)}</div>`}}
 
 async function addrPage(a){app.innerHTML='<div class="card">Loading account…</div>';
- try{const [info,sigs]=await Promise.all([rpc('getAccountInfo',[a,{encoding:'base64'}]),rpc('getSignaturesForAddress',[a,{limit:25}])]);const v=info.value;
+ const TOKEN='TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', TOKEN22='TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+ const toks=pid=>rpc('getTokenAccountsByOwner',[a,{programId:pid},{encoding:'jsonParsed'}]).catch(()=>({value:[]}));
+ try{const [info,sigs,tok,tok22]=await Promise.all([rpc('getAccountInfo',[a,{encoding:'base64'}]),rpc('getSignaturesForAddress',[a,{limit:25}]),toks(TOKEN),toks(TOKEN22)]);const v=info.value;
+ const tokens=[...((tok&&tok.value)||[]),...((tok22&&tok22.value)||[])].map(row=>{const inf=row.account&&row.account.data&&row.account.data.parsed&&row.account.data.parsed.info||{};const amt=inf.tokenAmount||{};return {mint:inf.mint||'',amount:amt.amount!=null?String(amt.amount):'0'};});
  app.innerHTML=`<h1>Account</h1><div class="card kv"><div>Address</div><div class="mono">${esc(a)} <button class="btn" style="padding:3px 10px" onclick="navigator.clipboard.writeText('${esc(a)}')">Copy</button></div>
  <div>Balance</div><div style="font-size:22px;font-weight:800" class="glow">${v?cl(v.lamports):'0 CLAWD'}</div>
- <div>Owner</div><div>${v?A(v.owner):'<span class="sub">account does not exist yet</span>'}</div><div>Executable</div><div>${v?v.executable:'-'}</div>
+ <div>Owner</div><div>${v?esc(ClawdChain.programLabel(v.owner))+' '+A(v.owner):'<span class="sub">account does not exist yet</span>'}</div><div>Executable</div><div>${v?v.executable:'-'}</div>
  <div>Data size</div><div>${v?(atob(v.data[0]).length).toLocaleString()+' bytes':'-'}</div><div>Rent epoch</div><div>${v?v.rentEpoch:'-'}</div></div>
+ <div class="card" style="margin-top:16px"><h3 style="margin-top:0">Token accounts</h3><table><tr><th>Mint</th><th>Amount</th></tr>
+ ${tokens.map(t=>`<tr><td class="mono">${esc(t.mint)}</td><td class="mono">${esc(t.amount)}</td></tr>`).join('')||'<tr><td colspan=2 class="sub">no token accounts</td></tr>'}</table></div>
  <div class="card" style="margin-top:16px"><h3 style="margin-top:0">Recent transactions</h3><table><tr><th>Signature</th><th>Slot</th><th>Status</th><th>Time</th></tr>
  ${sigs.map(s=>`<tr><td>${T(s.signature)}</td><td>${B(s.slot)}</td><td>${s.err?'<span class="pill bad">failed</span>':'<span class="pill ok">ok</span>'}</td><td class="sub">${ago(s.blockTime)}</td></tr>`).join('')||'<tr><td colspan=4 class="sub">no transactions</td></tr>'}</table></div>`}catch(e){app.innerHTML=`<div class="card err">${esc(e.message)}</div>`}}
 

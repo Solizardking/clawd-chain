@@ -1,54 +1,169 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>clawd chain: a public SVM playground</title><link rel="icon" href="/logo.svg"><link rel="stylesheet" href="/style.css">
+<title>clawd chain</title><link rel="icon" href="/logo.svg"><link rel="stylesheet" href="/style.css">
 <style>
-.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:30px;align-items:center;padding:50px 0 30px}
-.hero h1{font-size:64px;line-height:1.02;margin:0 0 16px;font-weight:900}.hero p{color:var(--dim);font-size:18px;max-width:560px}
-.big{width:100%;max-width:380px;margin:auto;display:block;animation:bob 4s ease-in-out infinite;filter:drop-shadow(0 0 30px #ff3b5c66)}
-@keyframes bob{50%{transform:translateY(-14px) rotate(-3deg)}}
-.ep{display:flex;gap:10px;align-items:center;margin:10px 0}.ep code{flex:1;background:#0b0a15;border:1px solid var(--line);border-radius:10px;padding:11px 12px;overflow:auto;white-space:nowrap}
-.ep .lbl{width:44px;color:var(--dim);font-weight:700;font-size:12px}.ticker{display:flex;gap:28px;flex-wrap:wrap;margin-top:22px;color:var(--dim)}.ticker b{color:var(--txt);font-variant-numeric:tabular-nums}
-h2{font-size:26px;margin:40px 0 14px}.feat h3{margin:0 0 6px}.feat p{margin:0;color:var(--dim)}
-@media(max-width:860px){.hero{grid-template-columns:1fr}.hero h1{font-size:44px}}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:28px;align-items:end;padding:8px 0 4px}
+.kicker{margin:0 0 8px;color:var(--dim);font-size:12px;font-weight:800;letter-spacing:2.4px;text-transform:uppercase}
+.slotnum{margin:0;font-size:clamp(76px,12vw,132px);font-weight:900;line-height:.82;letter-spacing:-5px;font-variant-numeric:tabular-nums}
+.slotnum span{background:linear-gradient(100deg,var(--txt) 20%,var(--cy));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--dim);max-width:540px;margin:14px 0 0}
+.meter{height:3px;margin-top:16px;background:#1c1830;border-radius:99px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--red),var(--cy));transition:width .6s}
+.tape{display:flex;flex-direction:column;gap:6px;min-height:180px}
+.tape a{display:flex;justify-content:space-between;gap:12px;padding:7px 10px;border:1px solid var(--line);border-left:3px solid var(--cy);border-radius:10px;color:var(--txt);background:#0c0a16;font-variant-numeric:tabular-nums;font-weight:700}
+.tape a:hover{border-color:var(--cy);text-shadow:none}
+.dock{display:flex;gap:10px;align-items:center;margin:22px 0}
+.dock input{flex:1}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.facts .v{font-size:22px}
+.bar{height:28px;display:flex;align-items:flex-end;gap:2px;margin-top:6px}
+.bar i{flex:1;background:linear-gradient(var(--cy),var(--pur));border-radius:2px 2px 0 0;min-height:2px}
+@media(max-width:860px){.stage,.facts{grid-template-columns:1fr}.dock{flex-wrap:wrap}.slotnum{letter-spacing:-3px}}
+<style>
+.ff{margin-top:18px;position:relative;overflow:hidden}
+.ff:before{content:"";position:absolute;inset:-40%;background:radial-gradient(30% 30% at 15% 20%,#ff4d3d22,transparent 70%),radial-gradient(30% 30% at 85% 80%,#ff9a3d1c,transparent 70%);animation:ffglow 9s ease-in-out infinite alternate;pointer-events:none}
+@keyframes ffglow{to{transform:translate(6%,4%)}}
+.ff h3{display:flex;align-items:center;gap:10px;margin-top:0}
+.ff .ff-live{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#ff9a3d;border:1px solid #ff4d3d55;border-radius:99px;padding:2px 10px}
+.ff .ff-live i{width:8px;height:8px;border-radius:50%;background:#ff4d3d;box-shadow:0 0 10px #ff4d3d;animation:ffpulse 1.2s infinite}
+@keyframes ffpulse{50%{opacity:.25}}
+#faucet-feed{list-style:none;margin:0;padding:0;display:grid;gap:6px;position:relative}
+.ff-row{display:grid;grid-template-columns:28px 1.2fr 1.2fr auto 70px;align-items:center;gap:10px;padding:9px 12px;border-radius:12px;background:#00000040;border:1px solid #ff4d3d22;font-family:ui-monospace,Menlo,monospace;font-size:13px;transition:background .6s}
+.ff-row.ff-new{animation:ffin .7s cubic-bezier(.2,1.4,.4,1) both,ffhot 2.4s ease-out}
+@keyframes ffin{from{opacity:0;transform:translateY(-14px) scale(.96)}}
+@keyframes ffhot{from{background:#ff4d3d40;box-shadow:0 0 24px #ff4d3d66}}
+.ff-claw{font-size:18px;display:inline-block}.ff-new .ff-claw{animation:ffsnap .5s 2}
+@keyframes ffsnap{50%{transform:rotate(-25deg) scale(1.25)}}
+.ff-amt{color:#3dffa0;font-weight:700}.ff-t{color:#9b8a85;text-align:right}.ff-to{color:#cdb9b3}
+.ff-empty{padding:12px;color:#9b8a85}
+@media(max-width:640px){.ff-row{grid-template-columns:24px 1fr auto}.ff-to,.ff-t{display:none}}
 </style></head><body>
-<nav><a class="brand" href="/"><img src="/logo.svg" width="34"> clawd</a><span class="sp"></span><a class="on" href="/">Home</a><a href="/explorer">Explorer</a><a href="https://faucet.clawdchain.trade">Faucet</a><a href="https://api.clawdchain.trade">API</a><a href="https://github.com/Solizardking/clawd-chain">GitHub</a></nav>
+<nav><a class="brand" href="/"><img src="/logo.svg" width="34" alt=""> clawd</a><span class="sp"></span><a class="on" href="/">Home</a><a href="/explorer">Explorer</a><a class="btn hot" href="https://launch.clawdchain.trade">Launchpad</a><a href="https://launch.clawdchain.trade" hidden>Launchpad</a><a href="/readme">Wallet</a><a href="https://faucet.clawdchain.trade">Faucet</a><a href="https://api.clawdchain.trade">API</a><a href="https://github.com/Solizardking/clawd-chain">GitHub</a></nav>
 <div class="wrap">
-<section class="hero"><div>
-<h1>The <span class="glow">clawd</span> chain</h1>
-<p>A public, Solana-compatible chain anyone can build on. Same SVM, same tools, same wallets. Grab free CLAWD from the faucet, deploy programs, mint Metaplex Core NFTs, and break things without paying mainnet fees.</p>
-<div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:22px"><a class="btn hot" href="https://faucet.clawdchain.trade">Get CLAWD</a><a class="btn" href="/explorer">Open explorer</a><a class="btn" href="https://github.com/Solizardking/clawd-chain">GitHub</a></div>
-<div class="ticker"><span><span class="dot"></span> slot <b id="slot">…</b></span><span>epoch <b id="ep">…</b></span><span>TPS <b id="tps">…</b></span><span>txs <b id="txc">…</b></span></div>
-</div><img class="big" src="/logo.svg" alt="clawd lobster"></section>
-
-<div class="card"><h3 style="margin-top:0">Connect</h3>
-<div class="ep"><span class="lbl">RPC</span><code id="rpc">https://rpc.clawdchain.trade</code><button class="btn" data-c="rpc">Copy</button></div>
-<div class="ep"><span class="lbl">WS</span><code id="ws">wss://rpc.clawdchain.trade</code><button class="btn" data-c="ws">Copy</button></div>
-<div class="ep"><span class="lbl">CLI</span><code id="cli">solana config set --url https://rpc.clawdchain.trade</code><button class="btn" data-c="cli">Copy</button></div>
-<div class="ep"><span class="lbl">Genesis</span><code id="gen">7nu7q65M7dhJu9j6Zo1XkL4VRfMdg8544Xy62KR8TiHY</code><button class="btn" data-c="gen">Copy</button></div>
+<section class="stage">
+<div>
+<p class="kicker"><span class="dot"></span> live chain</p>
+<h1 class="slotnum" id="slot">…</h1>
+<p class="lead">This page is the explorer. The number above is the chain tip. Search a slot, a signature, or an address.</p>
+<div class="meter" title="epoch progress"><i id="meter"></i></div>
 </div>
-
-<div class="card" style="margin-top:16px"><h3 style="margin-top:0">For agents & developers</h3>
-<div class="ep"><span class="lbl">API</span><code id="api">https://api.clawdchain.trade</code><button class="btn" data-c="api">Copy</button></div>
-<div class="ep"><span class="lbl">MCP</span><code id="mcp">https://mcp.clawdchain.trade/mcp</code><button class="btn" data-c="mcp">Copy</button></div>
-<p class="sub" style="color:var(--dim);margin:6px 0 0">Read-only MCP tools (streamable HTTP), WebMCP on every page, <a href="/llms.txt">llms.txt</a> and <a href="/.well-known/mcp.json">/.well-known/mcp.json</a>.</p></div>
-<h2>What's inside</h2>
-<div class="grid g4 feat">
-<div class="card"><h3>⚡ Full SVM</h3><p>Agave runtime. Your Anchor programs, web3.js and the Solana CLI just work.</p></div>
-<div class="card"><h3>🦞 CLAWD gas</h3><p>The native coin, 9 decimals. Free from the faucet, 69 per wallet every 12 hours.</p></div>
-<div class="card"><h3>🎨 NFTs ready</h3><p>Metaplex Core and Core Candy Machine and Guard come preloaded at genesis.</p></div>
-<div class="card"><h3>🛡️ Fair use</h3><p>Rate-limited public RPC (about 40 req/10s per IP). Heavy scans are disabled.</p></div>
+<div class="tape" id="tape" aria-label="Recent slots"></div>
+</section>
+<form class="dock" id="sf">
+<input id="q" placeholder="Search address, transaction signature, or slot" autocomplete="off">
+<button class="btn hot" type="submit">Search</button>
+<a class="btn" href="https://launch.clawdchain.trade">Launch a coin</a>
+</form>
+<div class="facts">
+<div class="card stat"><div class="k">Epoch</div><div class="v" id="ep">…</div><div class="sub" id="epp"></div></div>
+<div class="card stat"><div class="k">Block height</div><div class="v" id="height">…</div></div>
+<div class="card stat"><div class="k">TPS</div><div class="v" id="tps">…</div><div class="bar" id="bar"></div></div>
+<div class="card stat"><div class="k">Transactions</div><div class="v" id="txc">…</div></div>
 </div>
-<h2>Quick start</h2>
-<pre>solana config set --url https://rpc.clawdchain.trade
-solana-keygen new -o ~/clawd.json
-# grab CLAWD at the faucet, then:
-solana balance --keypair ~/clawd.json
-solana program deploy target/deploy/my_program.so</pre>
+<div class="grid g2">
+<div class="card"><h3 style="margin-top:0">Latest blocks</h3><table><thead><tr><th>Slot</th><th>Txs</th><th>Hash</th><th>Time</th></tr></thead><tbody id="blocks"><tr><td class="sub" colspan="4">listening…</td></tr></tbody></table></div>
+<div class="card"><h3 style="margin-top:0">Latest transactions <span class="sub">non-vote</span></h3><table><thead><tr><th>Signature</th><th>Slot</th><th>Status</th><th>Fee</th></tr></thead><tbody id="txs"><tr><td class="sub" colspan="4">waiting for activity…</td></tr></tbody></table></div>
 </div>
-<footer>clawd is a test network. CLAWD has no monetary value. <a href="https://github.com/Solizardking/clawd-chain">Source</a></footer>
+<div class="card ff"><h3>Faucet drops <span class="ff-live"><i></i> live</span> <span class="sub"><span id="ff-count">0</span> recent · <a href="https://faucet.clawdchain.trade">get 69 CLAWD</a></span></h3><ul id="faucet-feed" aria-live="polite"></ul></div>
+</div>
+<footer>clawd testnet · CLAWD has no monetary value · Shield <code>2AMyS5oLqvh2j4We5EUe9cHryd2vrCuVSdZtsZrP2PVH</code> · <a href="/readme">Wallet</a></footer>
+<script src="/chain.js"></script>
+<script src="/faucet-feed.js" defer></script>
 <script>
-document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{navigator.clipboard.writeText(document.getElementById(b.dataset.c).textContent);b.textContent='Copied ✓';setTimeout(()=>b.textContent='Copy',1400)});
-const rpc=(method,params=[])=>fetch('/api/rpc',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({method,params})}).then(r=>r.json()).then(j=>j.result);
-async function tick(){try{const e=await rpc('getEpochInfo');slot.textContent=e.absoluteSlot.toLocaleString();ep.textContent=e.epoch;txc.textContent=(e.transactionCount||0).toLocaleString()}catch{}}
-async function perf(){try{const p=await rpc('getRecentPerformanceSamples',[5]);const t=p.reduce((a,s)=>a+s.numTransactions,0)/p.reduce((a,s)=>a+s.samplePeriodSecs,0);tps.textContent=t.toFixed(1)}catch{}}
-tick();perf();setInterval(tick,3000);setInterval(perf,20000);
+(function () {
+  var VOTE = 'Vote111111111111111111111111111111111111111';
+  var LAM = 1000000000;
+  function $(sel) { return document.querySelector(sel); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+  function short(s) { s = String(s || ''); return s.length > 16 ? s.slice(0, 6) + '…' + s.slice(-6) : s; }
+  function ago(t) {
+    if (!t) return '';
+    var s = Math.max(0, Math.round(Date.now() / 1000 - t));
+    if (s < 60) return s + 's';
+    if (s < 3600) return Math.round(s / 60) + 'm';
+    return Math.round(s / 3600) + 'h';
+  }
+  function rpc(method, params) {
+    return fetch('/api/rpc', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ method: method, params: params || [] }) })
+      .then(function (r) { return r.json(); })
+      .then(function (j) { if (!j || j.result == null) throw new Error('rpc'); return j.result; });
+  }
+  var form = $('#sf');
+  if (form) form.onsubmit = function (e) {
+    if (e && e.preventDefault) e.preventDefault();
+    var q = ($('#q').value || '').trim();
+    if (!q || !window.ClawdChain) return false;
+    location.href = ClawdChain.classifyQuery(q).path;
+    return false;
+  };
+  function text(sel, value) { var el = $(sel); if (el) el.textContent = value; }
+  var last = 0;
+  var rows = [];
+  var trows = [];
+  function paintEpoch() {
+    return rpc('getEpochInfo').then(function (e) {
+      text('#slot', Number(e.absoluteSlot || 0).toLocaleString());
+      text('#ep', String(e.epoch));
+      text('#height', Number(e.blockHeight || 0).toLocaleString());
+      text('#txc', Number(e.transactionCount || 0).toLocaleString());
+      var pct = e.slotsInEpoch ? (100 * e.slotIndex / e.slotsInEpoch) : 0;
+      text('#epp', pct.toFixed(1) + '% of epoch');
+      var meter = $('#meter');
+      if (meter && meter.style) meter.style.width = Math.max(0, Math.min(100, pct)) + '%';
+    }).catch(function () {});
+  }
+  function paintTps() {
+    return rpc('getRecentPerformanceSamples', [16]).then(function (p) {
+      if (!p || !p.length) return;
+      var rates = p.map(function (s) { return s.numTransactions / (s.samplePeriodSecs || 1); }).reverse();
+      text('#tps', rates[rates.length - 1].toFixed(1));
+      var max = Math.max.apply(null, rates.concat([1]));
+      var bar = $('#bar');
+      if (bar) bar.innerHTML = rates.map(function (v) { return '<i style="height:' + Math.max(4, 100 * v / max) + '%"></i>'; }).join('');
+    }).catch(function () {});
+  }
+  function keysOf(tx) {
+    var keys = tx && tx.transaction && tx.transaction.message && tx.transaction.message.accountKeys || [];
+    return keys.map(function (k) { return k.pubkey || k; });
+  }
+  function paintBlocks() {
+    return rpc('getSlot', [{ commitment: 'confirmed' }]).then(function (slot) {
+      if (!last) last = slot - 6;
+      var want = [];
+      var start = Math.max(last + 1, slot - 3);
+      for (var s = start; s <= slot; s++) want.push(s);
+      last = slot;
+      var chain = Promise.resolve();
+      want.forEach(function (n) {
+        chain = chain.then(function () {
+          return rpc('getBlock', [n, { commitment: 'confirmed', maxSupportedTransactionVersion: 0, rewards: false, transactionDetails: 'full', encoding: 'json' }]).then(function (b) {
+            if (!b) return;
+            var real = (b.transactions || []).filter(function (t) { return keysOf(t).indexOf(VOTE) < 0; });
+            rows.unshift('<tr><td><a href="/block/' + n + '">' + Number(n).toLocaleString() + '</a></td><td>' + (b.transactions || []).length + (real.length ? ' <span class="pill ok">' + real.length + '</span>' : '') + '</td><td class="mono sub">' + esc(short(b.blockhash)) + '</td><td class="sub">' + ago(b.blockTime) + '</td></tr>');
+            real.forEach(function (t) {
+              var sig = t.transaction.signatures[0];
+              trows.unshift('<tr><td><a class="mono" href="/tx/' + esc(sig) + '">' + esc(short(sig)) + '</a></td><td><a href="/block/' + n + '">' + Number(n).toLocaleString() + '</a></td><td>' + (t.meta && t.meta.err ? '<span class="pill bad">failed</span>' : '<span class="pill ok">ok</span>') + '</td><td>' + ((t.meta && t.meta.fee || 0) / LAM).toFixed(6) + '</td></tr>');
+            });
+          }).catch(function () {});
+        });
+      });
+      return chain.then(function () {
+        rows.splice(10);
+        trows.splice(10);
+        var blocks = $('#blocks');
+        var txs = $('#txs');
+        if (blocks && rows.length) blocks.innerHTML = rows.join('');
+        if (txs && trows.length) txs.innerHTML = trows.join('');
+        var tape = $('#tape');
+        if (tape && rows.length) {
+          tape.innerHTML = rows.slice(0, 6).map(function (row) {
+            var m = row.match(/\/block\/(\d+)/);
+            return m ? '<a href="/block/' + m[1] + '"><span>slot</span><span>' + Number(m[1]).toLocaleString() + '</span></a>' : '';
+          }).join('');
+        }
+      });
+    }).catch(function () {});
+  }
+  function tick() { paintEpoch(); paintTps(); paintBlocks(); }
+  try { tick(); setInterval(tick, 4000); } catch (e) {}
+})();
 </script><script src="/webmcp.js" defer></script></body></html>

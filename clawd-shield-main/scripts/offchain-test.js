@@ -1,0 +1,11 @@
+const S=require('../sdk/shield');const snarkjs=require('snarkjs');const fs=require('fs');const {Keypair:SK}=require('@solana/web3.js');
+(async()=>{await S.init();const t=new S.MerkleTree();const kp=new S.Keypair();
+ const out=[new S.Note({amount:5_000_000_000n,keypair:kp}),new S.Note({amount:0n,keypair:kp})];
+ const r=SK.generate().publicKey.toBase58();
+ const p=await S.prove({tree:t,inputs:[],outputs:out,extAmount:5_000_000_000n,fee:0n,recipient:r,relayer:r,encPubs:[kp.enc.publicKey,kp.enc.publicKey],wasm:'build/transact_js/transact.wasm',zkey:'build/transact_final.zkey'});
+ const vk=JSON.parse(fs.readFileSync('build/verification_key.json'));
+ console.log('deposit proof ok:',await snarkjs.groth16.verify(vk,p.publicSignals,p.proof),'zero root',t.root().toString(16));
+ t.insert(out[0].commitment());t.insert(out[1].commitment());
+ const dec=S.Note.decrypt(kp,out[0].encrypt(kp.enc.publicKey),0);console.log('decrypt ok',dec.amount===out[0].amount&&dec.blinding===out[0].blinding);
+ const w=await S.prove({tree:t,inputs:[out[0]],outputs:[new S.Note({amount:1_000_000_000n,keypair:kp}),new S.Note({amount:0n,keypair:kp})],extAmount:-3_900_000_000n,fee:100_000_000n,recipient:r,relayer:r,encPubs:[kp.enc.publicKey,kp.enc.publicKey],wasm:'build/transact_js/transact.wasm',zkey:'build/transact_final.zkey'});
+ console.log('withdraw proof ok:',await snarkjs.groth16.verify(vk,w.publicSignals,w.proof));process.exit(0)})();

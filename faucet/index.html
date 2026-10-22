@@ -4,8 +4,8 @@
 <style>
 :root{--bg:#07060d;--line:#2a2346;--txt:#e9e6ff;--dim:#8c86b3;--red:#ff3b5c;--org:#ff8a3d;--cy:#2ef2ff;--grn:#3dffa8;--pur:#a259ff}
 *{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font:15px/1.5 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow-x:hidden}
-canvas#bg,canvas#fx{position:fixed;inset:0;width:100%;height:100%}canvas#fx{pointer-events:none;z-index:10}
-nav{position:relative;z-index:2;display:flex;gap:22px;align-items:center;padding:14px 28px}nav b{font-size:20px;flex:1}nav a{color:var(--dim);font-weight:600;text-decoration:none}nav a:hover{color:var(--txt)}
+canvas#bg,canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}canvas#fx{z-index:10}
+nav{position:relative;z-index:2;display:flex;gap:14px 18px;align-items:center;flex-wrap:wrap;padding:14px 28px}nav b{font-size:20px;margin-right:auto}nav a{color:var(--dim);font-weight:600;text-decoration:none}nav a:hover,nav a.on{color:var(--txt)}nav a.hot{background:linear-gradient(90deg,var(--red),var(--org));color:#140a10;border-radius:12px;padding:8px 14px}nav a.hot:hover{color:#140a10}
 main{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;padding:10px 20px 60px}
 .crab{width:230px;height:230px;margin-top:6px;filter:drop-shadow(0 0 30px #ff3b5c88)}
 .crab .clL{transform-origin:40px 110px;animation:snapL 1.6s ease-in-out infinite}.crab .clR{transform-origin:160px 110px;animation:snapR 1.6s ease-in-out infinite}
@@ -17,7 +17,7 @@ h1{font-size:58px;margin:4px 0 0;font-weight:900;letter-spacing:-1px;text-align:
 @keyframes hue{to{background-position:300%}}
 .tag{color:var(--dim);margin:6px 0 24px;text-align:center}
 .box{width:min(560px,100%);background:#120f22d9;border:1px solid var(--line);border-radius:22px;padding:22px;backdrop-filter:blur(10px);box-shadow:0 0 60px #ff3b5c22,0 30px 80px #000a;position:relative;overflow:hidden}
-.box:before{content:"";position:absolute;inset:-2px;border-radius:24px;padding:2px;background:conic-gradient(from var(--a,0deg),var(--red),var(--cy),var(--pur),var(--red));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:spin 4s linear infinite;opacity:.7}
+.box:before{content:"";position:absolute;inset:-2px;border-radius:24px;padding:2px;background:conic-gradient(from var(--a,0deg),var(--red),var(--cy),var(--pur),var(--red));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:spin 4s linear infinite;opacity:.7;pointer-events:none}
 @property --a{syntax:'<angle>';inherits:false;initial-value:0deg}@keyframes spin{to{--a:360deg}}
 input{width:100%;background:#0a0914;border:1px solid var(--line);border-radius:14px;color:var(--txt);padding:15px;font:14px ui-monospace,Menlo,monospace;outline:none}input:focus{border-color:var(--cy);box-shadow:0 0 0 4px #2ef2ff22}
 button{margin-top:14px;width:100%;padding:16px;border:0;border-radius:14px;font-size:18px;font-weight:900;color:#140a10;cursor:pointer;background:linear-gradient(90deg,var(--red),var(--org));box-shadow:0 0 30px #ff3b5c66;transition:.15s;letter-spacing:.5px}
@@ -32,7 +32,7 @@ button:hover{transform:translateY(-2px) scale(1.01);box-shadow:0 0 44px #ff3b5ca
 .big{font-size:44px;font-weight:900;color:var(--grn);text-shadow:0 0 24px var(--grn);animation:pop .6s cubic-bezier(.2,2,.4,1)}@keyframes pop{from{transform:scale(.2);opacity:0}}
 </style></head><body>
 <canvas id="bg"></canvas><canvas id="fx"></canvas>
-<nav><b>🦞 clawd</b><a href="{{EXPLORER}}/">Home</a><a href="{{EXPLORER}}/explorer">Explorer</a><a href="https://github.com/Solizardking/clawd-chain">GitHub</a></nav>
+<nav><b>🦞 clawd</b><a href="{{EXPLORER}}/">Home</a><a href="{{EXPLORER}}/explorer">Explorer</a><a class="hot" href="https://explorer.clawdchain.trade/launchpad">Launchpad</a><a href="{{EXPLORER}}/readme">Wallet</a><a class="on" href="/">Faucet</a><a href="https://payments.clawdchain.trade">Payments</a><a href="https://mint.clawdchain.trade">Mint</a><a href="https://api.clawdchain.trade">API</a><a href="https://github.com/Solizardking/clawd-chain">GitHub</a></nav>
 <main id="main">
 <svg class="crab" viewBox="0 0 200 200"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff3b5c"/><stop offset="1" stop-color="#ff8a3d"/></linearGradient></defs>
 <g class="body"><g class="ant" stroke="#ff3b5c" stroke-width="4" stroke-linecap="round" fill="none"><path d="M88 66 Q70 30 50 20"/><path d="M112 66 Q130 30 150 20"/></g>
@@ -42,13 +42,15 @@ button:hover{transform:translateY(-2px) scale(1.01);box-shadow:0 0 44px #ff3b5ca
 <ellipse cx="100" cy="128" rx="38" ry="46" fill="url(#g)"/><path d="M76 140h48M80 156h40" stroke="#c42245" stroke-width="3" stroke-linecap="round"/>
 <circle cx="86" cy="104" r="10" fill="#07060d"/><circle cx="114" cy="104" r="10" fill="#07060d"/><circle cx="89" cy="101" r="3.5" fill="#2ef2ff"/><circle cx="117" cy="101" r="3.5" fill="#2ef2ff"/>
 <path d="M90 122 Q100 130 110 122" stroke="#07060d" stroke-width="3" fill="none" stroke-linecap="round"/></g></svg>
-<h1>clawd faucet</h1><div class="tag">Pinch some free <b>CLAWD</b> for the clawd chain. {{AMOUNT}} per wallet every 12 hours.</div>
+<h1>clawd faucet</h1><div class="tag">Pinch some free <b>CLAWD</b> for the clawd chain. {{AMOUNT}} per claim, {{CLAIMS}} claim per wallet every {{WINDOW}} hours.</div>
+<div class="tag" id="quota">remaining wallet allowance: …</div>
 <div class="box"><input id="addr" placeholder="Your clawd / Solana wallet address" autocomplete="off" spellcheck="false">
 <button id="go">🦞 Pinch {{AMOUNT}} CLAWD</button>
 <div class="prog"><div class="track"><div class="fill" id="fill"></div></div><div class="meta"><span id="phase">mining proof of work…</span><span id="rate"></span></div><div class="hash" id="hash"></div></div>
 <div id="out"></div></div>
-<div class="rules"><span>⛏️ {{BITS}}-bit proof of work</span><span>👛 {{AMOUNT}} CLAWD / wallet / 24h</span><span>🌐 10 CLAWD / IP / 24h</span><span>🧪 testnet coins, no value</span></div>
+<div class="rules"><span>⛏️ {{BITS}}-bit proof of work</span><span>👛 {{CLAIMS}} × {{AMOUNT}} CLAWD / wallet / {{WINDOW}}h</span><span>🌐 {{IP_CAP}} CLAWD / IP / {{WINDOW}}h</span><span>🧪 testnet coins, no value</span></div>
 </main>
+<script src="/pow.js"></script>
 <script>
 // ---- background: bubbles + drifting tiny lobsters ----
 const bg=document.getElementById('bg'),fx=document.getElementById('fx'),c=bg.getContext('2d'),f=fx.getContext('2d');let W,H;
@@ -75,19 +77,25 @@ function fxDraw(){f.clearRect(0,0,W,H);parts=parts.filter(p=>p.l-->0&&p.y<H+60);
 requestAnimationFrame(draw);
 // ---- faucet logic (unchanged protocol: /challenge + PoW + /airdrop) ----
 const $=id=>document.getElementById(id),main=$('main'),out=$('out');
-async function sha(s){return new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))}
-function lz(b){let n=0;for(const x of b){if(x===0){n+=8;continue}n+=Math.clz32(x)-24;break}return n}
 const hex=b=>[...b].map(x=>x.toString(16).padStart(2,'0')).join('');
 $('go').onclick=async()=>{const address=$('addr').value.trim();out.className='';
  if(!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address)){out.className='errm';out.textContent='That does not look like a wallet address 🦀';return}
  $('go').disabled=true;main.className='working';speed=4;out.textContent='';$('phase').textContent='mining proof of work…';
- try{const {challenge,bits}=await (await fetch('/challenge')).json();const exp=2**bits,t0=performance.now();let nonce=0,h,best=0;
-  while(true){h=await sha(challenge+':'+nonce);const z=lz(h);if(z>best)best=z;if(z>=bits)break;nonce++;
-   if(nonce%400===0){const pct=100*(1-Math.exp(-nonce/exp));$('fill').style.width=pct.toFixed(1)+'%';$('rate').textContent=Math.round(nonce/((performance.now()-t0)/1000)).toLocaleString()+' H/s · best '+best+'/'+bits+' bits';$('hash').textContent=hex(h);await new Promise(r=>setTimeout(r))}}
-  $('fill').style.width='100%';$('hash').textContent=hex(h);$('phase').textContent='proof found! sending CLAWD…';
-  const r=await (await fetch('/airdrop',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({address,challenge,nonce})})).json();
-  if(r.signature){main.className='done';burst();out.className='okm';out.innerHTML=`<div class="big">+${r.amount} CLAWD</div>landed in your wallet 🦞<br><a href="{{EXPLORER}}/tx/${r.signature}" target="_blank">view transaction ↗</a> · <a href="{{EXPLORER}}/address/${address}" target="_blank">view wallet ↗</a>`;$('phase').textContent='done'}
+ try{const {challenge,bits}=await (await fetch('/challenge')).json();const exp=2**bits,t0=performance.now();
+  const solved=await ClawdPow.solve(challenge,bits,{onStep(step){const pct=100*(1-Math.exp(-step.nonce/exp));$('fill').style.width=pct.toFixed(1)+'%';$('rate').textContent=Math.round(step.nonce/((performance.now()-t0)/1000)).toLocaleString()+' H/s · best '+step.best+'/'+bits+' bits';$('hash').textContent=hex(step.hash)}});
+  $('fill').style.width='100%';$('hash').textContent=hex(solved.hash);$('phase').textContent='proof found! sending CLAWD…';
+  const r=await (await fetch('/airdrop',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({address,challenge,nonce:solved.nonce})})).json();
+  if(r.signature){main.className='done';burst();out.className='okm';out.innerHTML=`<div class="big">+${r.amount} CLAWD</div>landed in your wallet 🦞<br><a href="{{EXPLORER}}/tx/${r.signature}" target="_blank">view transaction ↗</a> · <a href="{{EXPLORER}}/address/${address}" target="_blank">view wallet ↗</a>`;$('phase').textContent='done';showQuota()}
   else{main.className='';out.className='errm';out.textContent=r.error||'faucet error'}}
  catch(e){main.className='';out.className='errm';out.textContent='Network error, try again'}
  speed=1;$('go').disabled=false};
+async function showQuota(){
+  const address=$('addr').value.trim();
+  try{
+    const q=await (await fetch('/quota?address='+encodeURIComponent(address))).json();
+    $('quota').textContent='remaining wallet allowance: '+q.walletRemaining+' CLAWD';
+  }catch(e){}
+}
+$('addr').addEventListener('input',showQuota);
+showQuota();
 </script><script src="{{EXPLORER}}/webmcp.js" defer></script></body></html>

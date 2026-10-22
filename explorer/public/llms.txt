@@ -8,7 +8,12 @@
 - Faucet: https://faucet.clawdchain.trade (69 CLAWD/wallet/12h, browser proof of work)
 - API docs: https://api.clawdchain.trade (OpenAPI: https://api.clawdchain.trade/openapi.json)
 - MCP (streamable HTTP, read-only): https://mcp.clawdchain.trade/mcp
+- Wallet README: https://clawdchain.trade/readme (same page as /wallet; local-custody Clawd Chain wallet)
+- Wallet source: https://github.com/Solizardking/clawd-chain-wallet
 - Source: https://github.com/Solizardking/clawd-chain
 
-Tools: get_slot, network_stats, get_balance, get_account, get_transaction, get_block, recent_blocks, search, faucet_info.
+Tools: get_slot, network_stats, get_balance, get_account, get_transaction, get_block, recent_blocks, search, faucet_info, get_nft, get_token, get_agent, payment_info.
+get_nft, get_token, and get_agent are read-only account lookups. payment_info describes x402 payments (schemes exact, x402, mpp on network clawd) and does not sign or settle. No tool solves faucet proof of work or requests an airdrop.
 Public RPC is rate limited (~40 req/10s per IP); getProgramAccounts, getLargestAccounts and requestAirdrop are disabled.
+
+Programs: Metaplex Core CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d, Candy Machine CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J, Candy Guard CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ, Agent Identity 1DREGFgysWYxLnRnKQnwrxnJQeSMk2HmGaC6whw2B2p, Agent Tools TLREGni9ZEyGC3vnPZtqUh95xQ8oPqJSvNjvB7FGK8S, Genesis GNS1S5J5AspKXgpjz6SvKL66kPaKWAhaGRhCqPRxii2B, Token Metadata metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s, Token TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA, Token-2022 TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb, wrapped SOL So11111111111111111111111111111111111111112.

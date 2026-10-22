@@ -1,0 +1,12 @@
+user = "firedancer"
+[gossip]
+  entrypoints = ["CLAWD_BOOTSTRAP_IPV4:8001"]
+[consensus]
+  alpenglow = true
+  identity_path = "/home/firedancer/validator-keypair.json"
+  vote_account_path = "/home/firedancer/vote-account.json"
+  expected_genesis_hash = "SET_AFTER_GENESIS"
+[paths]
+  ledger = "/data/ledger"
+[hugetlbfs]
+  mount_path = "/mnt/.fd"

@@ -1,0 +1,54 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>clawd launchpad</title><link rel="icon" href="/logo.svg"><link rel="stylesheet" href="/style.css">
+<style>
+.lp{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;align-items:start}
+.lp h1{font-size:42px;line-height:1.05;margin:0 0 8px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:block;color:var(--dim);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+#notice{min-height:1.4em;margin:10px 0 0;color:var(--cy)}
+@media(max-width:860px){.lp,.row{grid-template-columns:1fr}.lp h1{font-size:32px}}
+</style></head><body>
+<nav><a class="brand" href="https://clawdchain.trade/"><img src="/logo.svg" width="34" alt=""> clawd</a><span class="sp"></span><a href="https://clawdchain.trade/">Home</a><a href="https://clawdchain.trade/explorer">Explorer</a><a class="btn hot" href="https://launch.clawdchain.trade">Launchpad</a><a href="https://launch.clawdchain.trade" hidden>Launchpad</a><a href="/readme">Wallet</a><a href="https://faucet.clawdchain.trade">Faucet</a><a href="https://api.clawdchain.trade">API</a><a href="https://github.com/Solizardking/clawd-chain">GitHub</a></nav>
+<div class="wrap">
+<div class="lp">
+<div>
+<p class="sub">Pump-style curve · virtual reserves quote the price · paper CLAWD</p>
+<h1>Launch a <span class="glow">coin</span></h1>
+<p style="color:var(--dim);max-width:560px">Each coin opens its own curve. 1,000,000,000 supply, 793,100,000 sellable, 206,900,000 held back. Virtual reserves start at 30 CLAWD and 1,073,000,000 tokens. Real CLAWD starts at 0. The curve closes once the sellable inventory is gone and seeds an AMM with the real CLAWD plus the held-back tokens.</p>
+<div class="card">
+<label for="name">Name</label>
+<input id="name" name="name" autocomplete="off" placeholder="Coin name">
+<label for="symbol">Symbol</label>
+<input id="symbol" name="symbol" autocomplete="off" placeholder="SYMBOL" maxlength="12">
+<div class="actions"><button class="btn hot" id="create" type="button">Create coin</button></div>
+</div>
+<div class="card" style="margin-top:16px">
+<div class="row">
+<div><label for="amount">Buy CLAWD</label><input id="amount" name="amount" value="1" inputmode="decimal"></div>
+<div><label for="tokens">Sell tokens</label><input id="tokens" name="tokens" value="1000" inputmode="numeric"></div>
+</div>
+<div class="actions">
+<button class="btn hot" id="buy" type="button">Buy</button>
+<button class="btn" id="sell" type="button">Sell</button>
+</div>
+<p id="notice"></p>
+</div>
+</div>
+<div class="grid" style="gap:16px">
+<div class="card stat"><div class="k">Phase</div><div class="v" id="phase">no coin</div><div class="sub" id="status">Create a coin to open its curve.</div></div>
+<div class="card stat"><div class="k">Spot market cap</div><div class="v" id="price">—</div><div class="sub">virtual CLAWD / virtual tokens, on the full supply</div></div>
+<div class="card stat"><div class="k">Real reserve</div><div class="v" id="reserve">—</div><div class="sub">CLAWD that has entered the invariant</div></div>
+<div class="grid g2">
+<div class="card stat"><div class="k">Supply</div><div class="v" id="supply">—</div></div>
+<div class="card stat"><div class="k">Sellable left</div><div class="v" id="sellable">—</div></div>
+<div class="card stat"><div class="k">Your tokens</div><div class="v" id="held">—</div></div>
+<div class="card stat"><div class="k">Your CLAWD</div><div class="v" id="balance">—</div></div>
+</div>
+</div>
+</div>
+</div>
+<footer>clawd launchpad · in-browser curve · CLAWD has no monetary value</footer>
+<script src="/chain/market.js"></script>
+<script src="/launchpad.js"></script>
+</body></html>

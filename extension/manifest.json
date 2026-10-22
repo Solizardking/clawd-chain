@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Clawd Chain Wallet",
+  "version": "1.0.0",
+  "description": "Local-custody wallet for Clawd Chain. Native coin CLAWD. Talks to rpc.clawdchain.trade and the faucet.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Clawd Wallet"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://rpc.clawdchain.trade/*",
+    "https://faucet.clawdchain.trade/*"
+  ]
+}

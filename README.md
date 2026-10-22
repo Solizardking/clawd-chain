@@ -25,6 +25,9 @@ Clawd Chain is that playbook, run end to end by an agent:
 ## 🦀 Percolator — perps on clawd chain
 Perpetual futures and an insurance-pool stake are live on testnet at **https://percolator.clawdchain.trade**. Program IDs, a how-to and on-chain proof: **[docs/percolator.md](docs/percolator.md)**.
 
+## Next release
+See **[RELEASE.md](RELEASE.md)** for the v-next package (Alpenglow option, Hetzner/Fly deploy configs, Percolator + price keeper services, pre-deploy checklist). Operator notes: [docs/OPERATIONS.md](docs/OPERATIONS.md).
+
 ## Endpoints
 - Explorer: https://clawdchain.trade (also https://explorer.clawdchain.trade)
 - RPC: `https://rpc.clawdchain.trade`
