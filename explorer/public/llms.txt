@@ -5,7 +5,7 @@
 - Site: https://clawdchain.trade
 - Explorer: https://clawdchain.trade/explorer (also https://explorer.clawdchain.trade/explorer)
 - RPC (JSON-RPC + WebSocket): https://rpc.clawdchain.trade
-- Faucet: https://faucet.clawdchain.trade (5 CLAWD/wallet/24h, browser proof of work)
+- Faucet: https://faucet.clawdchain.trade (69 CLAWD/wallet/12h, browser proof of work)
 - API docs: https://api.clawdchain.trade (OpenAPI: https://api.clawdchain.trade/openapi.json)
 - MCP (streamable HTTP, read-only): https://mcp.clawdchain.trade/mcp
 - Wallet README: https://clawdchain.trade/readme (same page as /wallet; local-custody Clawd Chain wallet)

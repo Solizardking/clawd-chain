@@ -5,7 +5,7 @@
 :root{--bg:#07060d;--line:#2a2346;--txt:#e9e6ff;--dim:#8c86b3;--red:#ff3b5c;--org:#ff8a3d;--cy:#2ef2ff;--grn:#3dffa8;--pur:#a259ff}
 *{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font:15px/1.5 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow-x:hidden}
 canvas#bg,canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}canvas#fx{z-index:10}
-nav{position:relative;z-index:2;display:flex;gap:22px;align-items:center;padding:14px 28px}nav b{font-size:20px;flex:1}nav a{color:var(--dim);font-weight:600;text-decoration:none}nav a:hover{color:var(--txt)}
+nav{position:relative;z-index:2;display:flex;gap:14px 18px;align-items:center;flex-wrap:wrap;padding:14px 28px}nav b{font-size:20px;margin-right:auto}nav a{color:var(--dim);font-weight:600;text-decoration:none}nav a:hover,nav a.on{color:var(--txt)}nav a.hot{background:linear-gradient(90deg,var(--red),var(--org));color:#140a10;border-radius:12px;padding:8px 14px}nav a.hot:hover{color:#140a10}
 main{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;padding:10px 20px 60px}
 .crab{width:230px;height:230px;margin-top:6px;filter:drop-shadow(0 0 30px #ff3b5c88)}
 .crab .clL{transform-origin:40px 110px;animation:snapL 1.6s ease-in-out infinite}.crab .clR{transform-origin:160px 110px;animation:snapR 1.6s ease-in-out infinite}
@@ -32,7 +32,7 @@ button:hover{transform:translateY(-2px) scale(1.01);box-shadow:0 0 44px #ff3b5ca
 .big{font-size:44px;font-weight:900;color:var(--grn);text-shadow:0 0 24px var(--grn);animation:pop .6s cubic-bezier(.2,2,.4,1)}@keyframes pop{from{transform:scale(.2);opacity:0}}
 </style></head><body>
 <canvas id="bg"></canvas><canvas id="fx"></canvas>
-<nav><b>🦞 clawd</b><a href="{{EXPLORER}}/">Home</a><a href="{{EXPLORER}}/explorer">Explorer</a><a href="{{EXPLORER}}/readme">Wallet</a><a href="https://github.com/Solizardking/clawd-chain">GitHub</a></nav>
+<nav><b>🦞 clawd</b><a href="{{EXPLORER}}/">Home</a><a href="{{EXPLORER}}/explorer">Explorer</a><a class="hot" href="https://explorer.clawdchain.trade/launchpad">Launchpad</a><a href="{{EXPLORER}}/readme">Wallet</a><a class="on" href="/">Faucet</a><a href="https://payments.clawdchain.trade">Payments</a><a href="https://mint.clawdchain.trade">Mint</a><a href="https://api.clawdchain.trade">API</a><a href="https://github.com/Solizardking/clawd-chain">GitHub</a></nav>
 <main id="main">
 <svg class="crab" viewBox="0 0 200 200"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff3b5c"/><stop offset="1" stop-color="#ff8a3d"/></linearGradient></defs>
 <g class="body"><g class="ant" stroke="#ff3b5c" stroke-width="4" stroke-linecap="round" fill="none"><path d="M88 66 Q70 30 50 20"/><path d="M112 66 Q130 30 150 20"/></g>
@@ -42,13 +42,13 @@ button:hover{transform:translateY(-2px) scale(1.01);box-shadow:0 0 44px #ff3b5ca
 <ellipse cx="100" cy="128" rx="38" ry="46" fill="url(#g)"/><path d="M76 140h48M80 156h40" stroke="#c42245" stroke-width="3" stroke-linecap="round"/>
 <circle cx="86" cy="104" r="10" fill="#07060d"/><circle cx="114" cy="104" r="10" fill="#07060d"/><circle cx="89" cy="101" r="3.5" fill="#2ef2ff"/><circle cx="117" cy="101" r="3.5" fill="#2ef2ff"/>
 <path d="M90 122 Q100 130 110 122" stroke="#07060d" stroke-width="3" fill="none" stroke-linecap="round"/></g></svg>
-<h1>clawd faucet</h1><div class="tag">Pinch some free <b>CLAWD</b> for the clawd chain. {{AMOUNT}} per wallet per day.</div>
+<h1>clawd faucet</h1><div class="tag">Pinch some free <b>CLAWD</b> for the clawd chain. {{AMOUNT}} per claim, {{CLAIMS}} claim per wallet every {{WINDOW}} hours.</div>
 <div class="tag" id="quota">remaining wallet allowance: …</div>
 <div class="box"><input id="addr" placeholder="Your clawd / Solana wallet address" autocomplete="off" spellcheck="false">
 <button id="go">🦞 Pinch {{AMOUNT}} CLAWD</button>
 <div class="prog"><div class="track"><div class="fill" id="fill"></div></div><div class="meta"><span id="phase">mining proof of work…</span><span id="rate"></span></div><div class="hash" id="hash"></div></div>
 <div id="out"></div></div>
-<div class="rules"><span>⛏️ {{BITS}}-bit proof of work</span><span>👛 {{AMOUNT}} CLAWD / wallet / 24h</span><span>🌐 10 CLAWD / IP / 24h</span><span>🧪 testnet coins, no value</span></div>
+<div class="rules"><span>⛏️ {{BITS}}-bit proof of work</span><span>👛 {{CLAIMS}} × {{AMOUNT}} CLAWD / wallet / {{WINDOW}}h</span><span>🌐 {{IP_CAP}} CLAWD / IP / {{WINDOW}}h</span><span>🧪 testnet coins, no value</span></div>
 </main>
 <script src="/pow.js"></script>
 <script>
