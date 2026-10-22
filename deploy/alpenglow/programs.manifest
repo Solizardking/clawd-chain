@@ -1,0 +1,9 @@
+# clawd chain programs re-created at Alpenglow genesis (same ids + upgrade authorities).
+# .so files = `solana program dump` of the CURRENT chain (backup /root/backup/full-20261022T233624Z/programs, SHA256SUMS there).
+# Copy this file + the .so files into the clawd-ledger-alpenglow volume at /data/programs/ before first boot.
+2AMyS5oLqvh2j4We5EUe9cHryd2vrCuVSdZtsZrP2PVH 2AMyS5oLqvh2j4We5EUe9cHryd2vrCuVSdZtsZrP2PVH.so BfnaYDoMhgCkFLZaADmqNfAXqmPLErUCjqD6VXmddFtf
+79Y18fL6zUDEuiBVCMYy9wsAheoGJifmJ22oCfvXecRT 79Y18fL6zUDEuiBVCMYy9wsAheoGJifmJ22oCfvXecRT.so BfnaYDoMhgCkFLZaADmqNfAXqmPLErUCjqD6VXmddFtf
+AC5Pa5KtLsDiCkupD2JfTUHVbZzbRrntGtqCfGqHhdxD AC5Pa5KtLsDiCkupD2JfTUHVbZzbRrntGtqCfGqHhdxD.so GEBb8MGtPR6BoxrL4RBy1EyNuPMTSahGoSsZBw1m17zM
+6Grr3eyuJVME5gDbeT6g6Q3pojQGSuSDaEmHDM7QYhzx 6Grr3eyuJVME5gDbeT6g6Q3pojQGSuSDaEmHDM7QYhzx.so D7nvng9ir7DDfyv1t6VPhezuf8n3L91b4Kf57QrgHfY6
+85rgQvJsqVq5gF9TPMtxmPQaoVMGK1wd6qx1FZqfXk5q 85rgQvJsqVq5gF9TPMtxmPQaoVMGK1wd6qx1FZqfXk5q.so D7nvng9ir7DDfyv1t6VPhezuf8n3L91b4Kf57QrgHfY6
+GDaUkuhbErfBuL92oV93bWWHEVn9NF7pRNikSeq6nHLR GDaUkuhbErfBuL92oV93bWWHEVn9NF7pRNikSeq6nHLR.so D7nvng9ir7DDfyv1t6VPhezuf8n3L91b4Kf57QrgHfY6
