@@ -239,11 +239,9 @@ test('the explorer serves a launchpad page whose script buys on the published cu
     const explored = await fetch(base + '/explorer');
     const explorerHtml = await explored.text();
     assert.equal(explored.status, 200);
-    assert.match(explorerHtml, /href="\/launchpad"/);
-    const href = explorerHtml.match(/href="(\/launchpad)"/);
-    assert.ok(href);
-
-    const first = await fetch(base + href[1]);
+    assert.match(explorerHtml, /href="(\/launchpad|https:\/\/launch\.clawdchain\.trade|https:\/\/explorer\.clawdchain\.trade\/launchpad)"/);
+    // live nav links to launch.clawdchain.trade; the explorer still serves /launchpad itself
+    const first = await fetch(base + '/launchpad');
     const html = await first.text();
     assert.equal(first.status, 200);
     assert.match(html, /id="name"/);
@@ -255,7 +253,7 @@ test('the explorer serves a launchpad page whose script buys on the published cu
     assert.match(html, /Name/);
     assert.match(html, /Symbol/);
 
-    const second = await fetch(base + href[1]);
+    const second = await fetch(base + '/launchpad');
     const htmlAgain = await second.text();
     assert.equal(second.status, 200);
     assert.equal(htmlAgain, html);

@@ -75,7 +75,7 @@ test('a faucet airdrop shows up on /recent, the faucet stream, and the explorer 
     const recent = (await (await fetch(F + '/recent')).json()).items;
     assert.equal(recent[0].signature, SIG);
     assert.equal(recent[0].to, TO);
-    assert.equal(recent[0].amount, 5);
+    assert.equal(recent[0].amount, 69);
     const relayed = (await (await fetch(E + '/api/faucet/recent')).json()).items;
     assert.equal(relayed[0].signature, SIG);
     await new Promise(r => setTimeout(r, 300));
