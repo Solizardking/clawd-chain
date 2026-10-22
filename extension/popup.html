@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Clawd Wallet</title>
+  <style>
+    :root { color-scheme: dark; --bg:#07060d; --panel:#141127; --line:#2a2346; --txt:#e9e6ff; --dim:#8c86b3; --cy:#2ef2ff; --red:#ff3b5c; --org:#ff8a3d; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 380px; min-height: 560px; background: var(--bg); color: var(--txt); font: 14px/1.45 ui-sans-serif, system-ui, sans-serif; }
+    header { display: flex; gap: 10px; align-items: center; padding: 16px 16px 8px; }
+    header svg { width: 36px; height: 36px; }
+    h1 { font-size: 18px; margin: 0; }
+    p { margin: 0; color: var(--dim); }
+    main { padding: 8px 16px 18px; display: grid; gap: 12px; }
+    section { background: linear-gradient(180deg, #141127, #0d0b18); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+    .k { color: var(--dim); font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase; }
+    #balance { font-size: 28px; font-weight: 800; margin-top: 4px; }
+    #address, #network, #holdings, #signed { word-break: break-all; }
+    #holdings { min-height: 48px; white-space: pre-wrap; }
+    label { display: grid; gap: 6px; margin-bottom: 8px; }
+    input { width: 100%; background: #0b0a15; color: var(--txt); border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+    button { width: 100%; border: 0; border-radius: 12px; padding: 11px; font-weight: 800; color: #0b0710; background: linear-gradient(90deg, var(--red), var(--org)); cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header>
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="32" cy="32" r="30" fill="#ff3b5c"/>
+      <path d="M18 40c6 8 22 8 28 0" stroke="#fff" stroke-width="4" fill="none"/>
+      <circle cx="24" cy="26" r="4" fill="#fff"/>
+      <circle cx="40" cy="26" r="4" fill="#fff"/>
+    </svg>
+    <div>
+      <h1>Clawd Wallet</h1>
+      <p id="network">Clawd Chain</p>
+    </div>
+  </header>
+  <main>
+    <section>
+      <div class="k">Balance</div>
+      <div id="balance">0 CLAWD</div>
+      <p id="address">Local address</p>
+      <p id="status">Unlocking local key</p>
+    </section>
+    <section>
+      <div class="k">Faucet</div>
+      <button id="pinch" type="button">Get CLAWD</button>
+      <p id="faucet">Pinch free CLAWD for this wallet.</p>
+    </section>
+    <section>
+      <div class="k">Tokens</div>
+      <div id="holdings">No tokens yet</div>
+    </section>
+    <section>
+      <div class="k">Send CLAWD</div>
+      <label>Recipient<input id="to" type="text" autocomplete="off" placeholder="Recipient address"></label>
+      <label>Amount<input id="amount" type="text" inputmode="decimal" placeholder="0.00"></label>
+      <button id="send" type="button">Sign transfer</button>
+      <p id="signed">Signature stays on this device until you broadcast it.</p>
+    </section>
+  </main>
+  <script src="pow.js"></script>
+  <script src="names.js"></script>
+  <script src="wallet.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

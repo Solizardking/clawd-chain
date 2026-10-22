@@ -1,0 +1,122 @@
+{
+  "name": "clawd-chain",
+  "x-hetzner": {
+    "hostname": "ubuntu-24gb-hel1-1",
+    "ipv4": "95.216.154.157",
+    "ipv6": "2a01:4f9:c015:fe8f::/64",
+    "ipv6Host": "2a01:4f9:c015:fe8f::1",
+    "location": "Helsinki DC Park 1",
+    "ledgerMount": "/data",
+    "ledgerPath": "/data/ledger",
+    "gatewayService": "validator",
+    "gatewayUrl": "http://validator:8080"
+  },
+  "services": {
+    "validator": {
+      "build": {
+        "context": "../..",
+        "dockerfile": "Dockerfile"
+      },
+      "image": "clawd-chain-validator",
+      "restart": "unless-stopped",
+      "ports": [
+        "8080:8080"
+      ],
+      "volumes": [
+        "clawd-ledger:/data"
+      ],
+      "environment": {
+        "PORT": "8080",
+        "FAUCET_KEY": "${FAUCET_KEY}",
+        "SUPERMEMORY_API_KEY": "${SUPERMEMORY_API_KEY:-}"
+      }
+    },
+    "faucet": {
+      "build": {
+        "context": "../../faucet"
+      },
+      "image": "clawd-chain-faucet",
+      "restart": "unless-stopped",
+      "depends_on": [
+        "validator"
+      ],
+      "ports": [
+        "9900:8080"
+      ],
+      "environment": {
+        "PORT": "8080",
+        "VALIDATOR_RPC": "http://validator:8080",
+        "FAUCET_KEY": "${FAUCET_KEY}",
+        "POW_SECRET": "${POW_SECRET}"
+      }
+    },
+    "explorer": {
+      "build": {
+        "context": "../..",
+        "dockerfile": "explorer/Dockerfile"
+      },
+      "image": "clawd-chain-explorer",
+      "restart": "unless-stopped",
+      "depends_on": [
+        "validator"
+      ],
+      "ports": [
+        "9901:8080"
+      ],
+      "environment": {
+        "PORT": "8080",
+        "VALIDATOR_RPC": "http://validator:8080",
+        "FAUCET_INTERNAL": "http://faucet:8080"
+      }
+    },
+    "api": {
+      "build": {
+        "context": "../../api"
+      },
+      "image": "clawd-chain-api",
+      "restart": "unless-stopped",
+      "depends_on": [
+        "validator"
+      ],
+      "ports": [
+        "9902:8080"
+      ],
+      "environment": {
+        "PORT": "8080",
+        "VALIDATOR_RPC": "http://validator:8080",
+        "FACILITATOR_URL": "https://payments.clawdchain.trade",
+        "PAYMENTS_INTERNAL": "http://payments:8090"
+      }
+    },
+    "payments": {
+      "build": {
+        "context": "../..",
+        "dockerfile": "payments/Dockerfile"
+      },
+      "image": "clawd-chain-payments",
+      "restart": "unless-stopped",
+      "depends_on": [
+        "validator"
+      ],
+      "ports": [
+        "9903:8090"
+      ],
+      "environment": {
+        "PORT": "8090",
+        "CLAWD_RPC": "http://validator:8080",
+        "REGISTRY_FILE": "/data/payments/registry.json"
+      },
+      "volumes": [
+        "clawd-payments:/data/payments"
+      ]
+    }
+  },
+  "volumes": {
+    "clawd-ledger": {
+      "name": "clawd-ledger"
+    },
+    "clawd-payments": {
+      "name": "clawd-payments"
+    }
+  }
+}

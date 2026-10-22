@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Clawd Chain Wallet</title>
+<link rel="icon" href="/logo.svg">
+<link rel="stylesheet" href="/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body.readme{background:#07060d}
+canvas#rain{position:fixed;inset:0;z-index:0;width:100%;height:100%;pointer-events:none}
+body.readme nav,body.readme .wrap,body.readme footer{position:relative;z-index:1}
+.sheet{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,0.85fr);gap:28px;align-items:start;padding-top:18px}
+.mast{grid-column:1 / -1}
+.kicker{font-family:"IBM Plex Mono",ui-monospace,monospace;letter-spacing:.22em;text-transform:uppercase;color:#b6ff3b;font-size:12px;margin:0 0 10px}
+.mast,.zine{background:rgba(7,6,13,.94);border-radius:12px}
+.mast{padding:12px 16px 16px}
+.zine{padding:8px 16px 4px}
+.mast h1{font-family:"Big Shoulders Stencil Display","Arial Narrow",Impact,sans-serif;font-weight:800;font-size:clamp(48px,7.4vw,104px);line-height:.86;letter-spacing:.02em;margin:0;color:#efe7c8;text-shadow:0 0 24px #b6ff3b33;white-space:nowrap}
+.mast h1 span{color:#ff3b5c}
+.lede{max-width:68ch;color:#efe7c8;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:15px;margin:18px 0 0}
+.zine{color:#efe7c8;font-family:"IBM Plex Mono",ui-monospace,monospace}
+.zine h2{font-family:"Big Shoulders Stencil Display",Impact,sans-serif;font-size:34px;letter-spacing:.04em;margin:0 0 8px;color:#efe7c8}
+.zine p{margin:0 0 14px;color:#d9d0ae}
+.zine ol{margin:0;padding-left:1.2em;color:#d9d0ae}
+.zine li{margin:0 0 8px}
+.zine a{color:#b6ff3b}
+.plate{position:sticky;top:78px;background:
+  radial-gradient(circle at 16px 28px,#07060d 5px,transparent 6px) 0 0 / 100% 36px,
+  linear-gradient(180deg,#12160c,#0c0b10);
+  border:1px solid #b6ff3b66;border-radius:18px;padding:18px 18px 18px 36px;
+  box-shadow:0 0 0 1px #ff3b5c33,0 24px 50px #000a}
+.plate .k{font-family:"IBM Plex Mono",ui-monospace,monospace;color:#8d8668;font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+#balance{font-family:"Big Shoulders Stencil Display",Impact,sans-serif;font-size:54px;line-height:.9;color:#b6ff3b;margin:4px 0 8px}
+#address,#holdings,#signed,#network,#faucet,#status{font-family:"IBM Plex Mono",ui-monospace,monospace;color:#efe7c8}
+#address,#holdings,#signed{word-break:break-all}
+#network,#faucet,#status{overflow-wrap:break-word}
+#holdings{min-height:36px;white-space:pre-wrap;color:#d9d0ae}
+.plate label{display:grid;gap:6px;margin:8px 0;font-family:"IBM Plex Mono",ui-monospace,monospace;color:#8d8668;font-size:12px}
+.plate input{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.plate button{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+@media(max-width:860px){
+  .sheet{grid-template-columns:1fr}
+  .plate{position:static;order:-1}
+  .mast h1{font-size:52px;white-space:normal}
+}
+@media(prefers-reduced-motion:reduce){
+  canvas#rain{display:none}
+}
+:focus-visible{outline:2px solid #b6ff3b;outline-offset:3px}
+</style>
+</head>
+<body class="readme">
+<canvas id="rain" aria-hidden="true"></canvas>
+<nav><a class="brand" href="/"><img src="/logo.svg" width="34" alt=""> clawd</a><span class="sp"></span><a href="/">Home</a><a href="/explorer">Explorer</a><a class="btn hot" href="https://explorer.clawdchain.trade/launchpad">Launchpad</a><a href="/launchpad" hidden>Launchpad</a><a class="on" href="/readme">Wallet</a><a href="https://faucet.clawdchain.trade">Faucet</a><a href="https://api.clawdchain.trade">API</a><a href="https://github.com/Solizardking/clawd-chain-wallet">GitHub</a></nav>
+<div class="wrap">
+<div class="sheet">
+<header class="mast">
+<p class="kicker">Readme · Clawd Chain Wallet · 1.0.0</p>
+<h1 id="decrypt" aria-label="The key never leaves">THE KEY NEVER LEAVES</h1>
+<p class="lede">This page is the wallet. The same scripts as the Chrome extension run here, the balance comes through the explorer, and the address opens on the chain.</p>
+</header>
+<article class="zine">
+<h2>What you are holding</h2>
+<p>Clawd Chain Wallet keeps a key in the browser. The extension stores it with <span class="mono">chrome.storage.local</span>. This page stores it in <span class="mono">localStorage</span> on clawdchain.trade. Those two keys are not the same key. Locking the popup clears the open vault. It does not delete the saved seed.</p>
+<p>Sign builds <span class="mono">{sender, recipient, amount, network:"clawd"}</span> and signs that text with Ed25519. The signature stays on this device. The button does not submit a chain transaction.</p>
+<p>Get CLAWD asks the faucet for a challenge, solves the proof of work in this tab, and posts the nonce. The public RPC still refuses <span class="mono">requestAirdrop</span>. Five CLAWD per wallet per day. CLAWD has no monetary value.</p>
+<h2>Load the extension</h2>
+<ol>
+<li>Download the <a href="https://github.com/Solizardking/clawd-chain-wallet/releases/tag/v1.0.0">v1.0.0 release</a> and unzip it.</li>
+<li>Open <span class="mono">chrome://extensions</span> and turn on Developer mode.</li>
+<li>Choose Load unpacked and select the folder that contains <span class="mono">manifest.json</span>.</li>
+</ol>
+<p>The popup talks to <a href="https://rpc.clawdchain.trade">rpc.clawdchain.trade</a>. This page sends those same reads to <span class="mono">/api/rpc</span> on the explorer, which relays them to the chain. Source: <a href="https://github.com/Solizardking/clawd-chain-wallet">Solizardking/clawd-chain-wallet</a>.</p>
+</article>
+<section class="plate" id="wallet" aria-label="Clawd wallet">
+<div class="k">Balance</div>
+<div id="balance">…</div>
+<p id="address">Creating a local key</p>
+<p id="status">Unlocking local key</p>
+<p id="network">Clawd Chain</p>
+<div class="k" style="margin-top:14px">Faucet</div>
+<button class="btn hot" id="pinch" type="button">Get CLAWD</button>
+<p id="faucet">Pinch free CLAWD for this wallet. <a href="https://faucet.clawdchain.trade">Open the faucet</a> if this tab cannot reach it.</p>
+<div class="k" style="margin-top:14px">Tokens</div>
+<div id="holdings">No tokens yet</div>
+<div class="k" style="margin-top:14px">Send CLAWD</div>
+<label>Recipient<input id="to" type="text" autocomplete="off" placeholder="Recipient address"></label>
+<label>Amount<input id="amount" type="text" inputmode="decimal" placeholder="0.00"></label>
+<button class="btn" id="send" type="button">Sign transfer</button>
+<p id="signed">Signature stays on this device until you broadcast it.</p>
+</section>
+</div>
+</div>
+<footer>clawd is a test network. CLAWD has no monetary value. <a href="https://github.com/Solizardking/clawd-chain-wallet">Wallet source</a></footer>
+<script src="/readme.js"></script>
+<script src="/extension/pow.js"></script>
+<script src="/extension/names.js"></script>
+<script src="/extension/wallet.js"></script>
+<script src="/readme-boot.js"></script>
+<script src="/extension/popup.js"></script>
+<script src="/readme-link.js"></script>
+<script src="/webmcp.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+# clawd chain — Hetzner stack (release/v-next). Supersedes compose.json (kept for the existing tests/up.sh).
+#   docker compose -p clawd-chain -f docker-compose.yml --env-file .env up -d --build
+# Alpenglow (NEW GENESIS, see RELEASE.md):
+#   docker compose -p clawd-chain -f docker-compose.yml -f docker-compose.alpenglow.yml --env-file .env up -d --build
+# Secrets come only from .env (never committed). Names: see RELEASE.md "Secrets inventory".
+name: clawd-chain
+x-rpc: &rpc
+  VALIDATOR_RPC: http://validator:8080
+services:
+  validator:
+    build: { context: ../.., dockerfile: Dockerfile }
+    image: clawd-chain-validator
+    restart: unless-stopped
+    ports: ["8080:8080"]
+    volumes: ["clawd-ledger:/data"]
+    environment:
+      PORT: "8080"
+      FAUCET_KEY: ${FAUCET_KEY}
+      SUPERMEMORY_API_KEY: ${SUPERMEMORY_API_KEY:-}
+  faucet:
+    build: { context: ../../faucet }
+    image: clawd-chain-faucet
+    restart: unless-stopped
+    depends_on: [validator]
+    ports: ["9900:8080"]
+    environment: { <<: *rpc, PORT: "8080", FAUCET_KEY: "${FAUCET_KEY}", POW_SECRET: "${POW_SECRET}" }
+  explorer:
+    build: { context: ../.., dockerfile: explorer/Dockerfile }
+    image: clawd-chain-explorer
+    restart: unless-stopped
+    depends_on: [validator]
+    ports: ["9901:8080"]
+    environment: { <<: *rpc, PORT: "8080", FAUCET_INTERNAL: "http://faucet:8080" }
+  api:
+    build: { context: ../../api }
+    image: clawd-chain-api
+    restart: unless-stopped
+    depends_on: [validator]
+    ports: ["9902:8080"]
+    environment: { <<: *rpc, PORT: "8080", FACILITATOR_URL: "https://payments.clawdchain.trade", PAYMENTS_INTERNAL: "http://payments:8090" }
+  payments:
+    build: { context: ../.., dockerfile: payments/Dockerfile }
+    image: clawd-chain-payments
+    restart: unless-stopped
+    depends_on: [validator]
+    ports: ["9903:8090"]
+    volumes: ["clawd-payments:/data/payments"]
+    environment: { PORT: "8090", CLAWD_RPC: "http://validator:8080", REGISTRY_FILE: /data/payments/registry.json }
+  # Percolator frontend. Source is the PRIVATE repo, pulled at build time; the host needs a
+  # read-only deploy key or fine-grained token for Solizardking/clawd-percolator
+  # (export GIT_AUTH_TOKEN before `docker compose build`, BuildKit forwards it to the git context).
+  percolator-launch:
+    build:
+      context: https://github.com/Solizardking/clawd-percolator.git#${PERCOLATOR_REF:-main}
+      dockerfile: deploy/hetzner/percolator-launch.Dockerfile
+      secrets: [GIT_AUTH_TOKEN]
+    image: clawd-percolator-launch
+    restart: unless-stopped
+    depends_on: [validator, price-keeper]
+    ports: ["9904:8080"]
+    environment:
+      PORT: "8080"
+      NETWORK: clawd
+      NEXT_PUBLIC_DEFAULT_NETWORK: clawd
+      CLAWD_RPC: http://validator:8080
+      CLAWD_PUBLIC_RPC: https://rpc.clawdchain.trade
+      PERCOLATOR_DATA: /data
+      PRICES_FILE: /prices/prices.json
+      PERCOLATOR_HIDDEN_LAUNCHES: ${PERCOLATOR_HIDDEN_LAUNCHES:-}
+    volumes:
+      - /opt/percolator-house:/data        # house state + house key live on the host only
+      - clawd-prices:/prices:ro
+  # Read-only price keeper (no keys): Phoenix allMids for SOL/BTC, DexScreener for CLAWD.
+  price-keeper:
+    build: { context: ../../keeper }
+    image: clawd-price-keeper
+    restart: unless-stopped
+    volumes: ["clawd-prices:/data"]
+    environment:
+      PRICES_FILE: /data/prices.json
+      CLAWD_TOKEN: ${CLAWD_TOKEN:-}
+      MAX_MOVE_BPS: "100"
+secrets:
+  GIT_AUTH_TOKEN:
+    environment: GIT_AUTH_TOKEN
+volumes:
+  clawd-ledger: { name: clawd-ledger }
+  clawd-payments: { name: clawd-payments }
+  clawd-prices: { name: clawd-prices }

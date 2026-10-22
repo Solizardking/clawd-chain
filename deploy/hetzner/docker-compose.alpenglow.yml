@@ -1,0 +1,12 @@
+# Overlay: Agave 4.3.2 + Alpenglow at genesis. Uses a NEW ledger volume so the current chain is untouched
+# (rollback = drop this overlay). FAUCET_PUBKEY funds the faucet at genesis.
+services:
+  validator:
+    build: { context: ../.., dockerfile: deploy/alpenglow/Dockerfile }
+    image: clawd-chain-validator-alpenglow
+    volumes: !override ["clawd-ledger-alpenglow:/data"]
+    environment:
+      FAUCET_PUBKEY: ${FAUCET_PUBKEY}
+      LEDGER_RESET_TOKEN: ${LEDGER_RESET_TOKEN:-alpenglow-1}
+volumes:
+  clawd-ledger-alpenglow: { name: clawd-ledger-alpenglow }

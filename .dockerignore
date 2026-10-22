@@ -1,0 +1,13 @@
+.git
+node_modules
+ZOLana-main
+clawd-shield-main
+.programs
+ledger
+test-ledger
+data
+.env
+.env.*
+!.env.example
+*keypair*
+*.so

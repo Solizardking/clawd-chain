@@ -1,0 +1,12 @@
+[toolchain]
+anchor_version = "0.32.1"
+[features]
+resolution = true
+skip-lint = false
+[programs.localnet]
+clawd_shield = "2AMyS5oLqvh2j4We5EUe9cHryd2vrCuVSdZtsZrP2PVH"
+[provider]
+cluster = "https://clawd-validator-production.up.railway.app"
+wallet = ".keys/deployer.json"
+[workspace]
+members = ["programs/*"]
