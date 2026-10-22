@@ -117,3 +117,4 @@ Copy `/root/backup` off-host (encrypted) before touching anything. Record curren
 - Keeper is built, not wired: the Percolator server must read `PRICES_FILE` to quote trades; SOL-PERP/BTC-PERP markets still need creating (`initial_price` from keeper). Coming soon.
 - Unstake during cooldown surfaces raw custom error `0x3` → map to "Stake is cooling down (10 slots)" in the private frontend.
 - Docker images were validated with `docker compose config` only (no Docker daemon on the prep box) — run `docker compose build` on the host first.
+- **Reconcile before merge:** `faucet/index.html`, `explorer/public/index.html`, `explorer/public/llms.txt`, `api/server.js` take the production (Hetzner) version; `main` had Oct 21 edits to these (e.g. faucet nav/animated background) that may not be in production. Review the diff vs `main` for each. Public `README.md` kept from `main`; the production README is preserved as `docs/OPERATIONS.md`.
