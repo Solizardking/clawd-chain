@@ -1,0 +1,52 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>clawd chain · Alpenglow</title><meta name="description" content="clawd chain runs Agave 4.3.2 with Alpenglow (SIMD-0326) consensus active from epoch 0.">
+<link rel="icon" href="/logo.svg"><link rel="stylesheet" href="/style.css">
+<style>
+.ag h1{font-size:42px;line-height:1.05;margin:0 0 8px}.ag h2{margin:28px 0 8px}
+.ag p,.ag li{line-height:1.6}.ag code{word-break:break-all}
+.ag pre{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px;overflow:auto}
+.live{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.live .card b{display:block;font-size:26px;margin-top:4px}.live small{color:var(--dim)}
+@media(max-width:860px){.live{grid-template-columns:1fr}.ag h1{font-size:32px}}
+</style></head><body>
+<nav><a class="brand" href="/"><img src="/logo.svg" width="34" alt=""> clawd</a><span class="sp"></span><a href="/">Home</a><a href="/explorer">Explorer</a><a class="btn hot" href="https://launch.clawdchain.trade">Launchpad</a><a href="https://launch.clawdchain.trade" hidden>Launchpad</a><a href="/readme">Wallet</a><a class="on" href="/alpenglow">Alpenglow</a><a href="/ore">ORE</a><a href="https://faucet.clawdchain.trade">Faucet</a><a href="https://api.clawdchain.trade">API</a><a href="https://github.com/Solizardking/clawd-chain">GitHub</a></nav>
+<div class="wrap ag">
+<h1>Alpenglow on clawd chain</h1>
+<p>On October 22, 2026, clawd chain moved to <b>Agave 4.3.2</b> with <b>Alpenglow</b> consensus active from <b>epoch 0</b> on a new genesis.</p>
+<div class="live">
+<div class="card stat"><small>Processed slot</small><b id="s-proc">…</b></div>
+<div class="card stat"><small>Finalized slot</small><b id="s-fin">…</b></div>
+<div class="card stat"><small>Finality lag (slots)</small><b id="s-lag">…</b></div>
+</div>
+<p><small id="s-meta">Live from the RPC, refreshes every few seconds.</small></p>
+
+<h2>What is Alpenglow?</h2>
+<p>Alpenglow is a consensus protocol for Solana, proposed by Anza researchers and specified in <a href="https://github.com/solana-foundation/solana-improvement-documents/pull/326">SIMD-0326</a>. It retires TowerBFT and Proof-of-History from the core consensus path and introduces two components:</p>
+<ul>
+<li><b>Votor</b>: voting and finalization. Per Anza, a block is finalized in a single round of voting if 80% of stake participates, or in two rounds if only 60% of stake is responsive.</li>
+<li><b>Rotor</b>: block propagation. It refines Turbine's erasure-coded approach, uses node bandwidth in proportion to stake, and relays through a single layer of nodes instead of Turbine's multi-layer tree.</li>
+</ul>
+<p>The design aims for much faster, deterministic finality than TowerBFT. See Anza's <a href="https://www.anza.xyz/blog/alpenglow-a-new-consensus-for-solana">announcement</a> and the <a href="https://github.com/solana-foundation/solana-improvement-documents/pull/326">SIMD</a> for details. We don't publish benchmark numbers of our own. Use the live counters above.</p>
+
+<h2>What changed on clawd chain</h2>
+<ul>
+<li>Validator: Agave 4.3.2, feature <code>A1pengvuM6JEcyNuTnMqepBKhwHE3N6PmUrdATGawhJS</code> active since epoch 0.</li>
+<li>New genesis hash: <code id="gh">BjbvUdJLreJzCfVEQZHi3D4QttNyp3P5mNXEvHw56kBP</code></li>
+<li>Programs were loaded into the new genesis at the <b>same addresses</b>, with the same upgrade authorities.</li>
+<li>Faucet: <a href="https://faucet.clawdchain.trade">faucet.clawdchain.trade</a>, 69 CLAWD per wallet every 12h (browser proof of work).</li>
+<li>Earlier history lives on the previous genesis. Balances and tokens from it are being restored separately.</li>
+</ul>
+
+<h2>Connect</h2>
+<p>RPC (JSON-RPC and WebSocket): <code>https://rpc.clawdchain.trade</code></p>
+<pre>solana config set --url https://rpc.clawdchain.trade
+solana genesis-hash   # BjbvUdJLreJzCfVEQZHi3D4QttNyp3P5mNXEvHw56kBP
+solana slot</pre>
+<p>Wallets: add a custom network with RPC URL <code>https://rpc.clawdchain.trade</code>, or use the <a href="/readme">clawd wallet</a>. If a wallet cached the old network, remove it and add it again so it picks up the new genesis.</p>
+
+<h2>Roadmap</h2>
+<p><b>Firedancer</b> is on the roadmap. We will run Firedancer validators alongside Agave once Alpenglow support there is ready.</p>
+</div>
+<footer>clawd testnet · CLAWD has no monetary value · <a href="/llms.txt">llms.txt</a></footer>
+<script src="/alpenglow.js"></script>
+</body></html>

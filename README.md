@@ -1,7 +1,7 @@
 # clawd chain
 
 A public, standalone SVM (Solana-compatible) chain for the clawd ecosystem. Native token label: **CLAWD**.
-It runs a single Agave `solana-test-validator` (v2.2.20) behind a small Node gateway (`proxy.js`) that serves HTTP RPC and WebSocket on one HTTPS domain.
+It runs Agave **4.3.2** with **Alpenglow** consensus (SIMD-0326) active from epoch 0 (since 2026-10-22), behind a small Node gateway (`proxy.js`) that serves HTTP RPC and WebSocket on one HTTPS domain.
 Metaplex Core, Core Candy Machine and Core Candy Guard are preloaded (cloned from mainnet at genesis).
 
 **Mission: Educate · Onboard · Entertain.** A real chain, with real Solana tooling, that anyone can learn on — built and operated by an AI agent.
@@ -22,6 +22,14 @@ Clawd Chain is that playbook, run end to end by an agent:
 
 **Where it runs:** production's validator runs on a dedicated **Hetzner** host. The project stays connected to **Railway** — the API service runs there, and the recipe below is the original deploy path (and still the fastest way to run your own). The chain graduated; the recipe remains.
 
+## What's new (Oct 2026): Alpenglow, ORE, SVM Kit, Faremeter, Firedancer plan
+Full list in **[CHANGELOG.md](CHANGELOG.md)**.
+- **Alpenglow**: Agave 4.3.2, Alpenglow (SIMD-0326) active from epoch 0 on new genesis `BjbvUdJLreJzCfVEQZHi3D4QttNyp3P5mNXEvHw56kBP`. Programs kept their addresses. Page: [/alpenglow](https://clawdchain.trade/alpenglow). Runbook: [deploy/alpenglow](deploy/alpenglow/RESET-RUNBOOK.md).
+- **ORE mining**: ORE v3.1.0 proof-of-work ported to clawd chain. Program `2QHkgHHPxFUak2MC16QvB6zh7aeKQn1ehEn1sEsTaaCP`, noop `EHLnnhgdE1tq4bvLaTUaqs6bbmMMT6q88t1ZxDxLcwts`, cORE test mint `5e2NA8PVis1QCx3aT5qmdFDW3KFJFnpY7WCf26Ds8XT7` (test token, no value). [Claim tx](https://explorer.clawdchain.trade/tx/4ZuZNXZFzfDiz5hSCRasEzxyozZagHwoGVzrZTX8uVNZuPTMDyR8CBcox1h5rfj3FfhfFAyiJejXZTeNkgW5wPJ8). Code: [programs/ore](programs/ore/README.md). Page: [/ore](https://clawdchain.trade/ore).
+- **SVM Kit**: Pulumi stacks (single and multi validator) in [deploy/svmkit](deploy/svmkit/README.md).
+- **Faremeter x402**: pay-per-call gate on `GET /api/premium/chain-stats` (0.001 CLAWD) in [payments/x402](payments/x402/README.md). [Settlement tx](https://explorer.clawdchain.trade/tx/3qU8aesdAfyG6SyChhFuqZP4tzhGovP2koVR92oGovbwo8WaPDLzDEvfLtnCFPqvujo6pme29n3UmpQUeN2mveeB).
+- **Firedancer**: plan in [FIREDANCER.md](FIREDANCER.md).
+
 ## 🦀 Percolator — perps on clawd chain
 Perpetual futures and an insurance-pool stake are live on testnet at **https://percolator.clawdchain.trade**. Program IDs, a how-to and on-chain proof: **[docs/percolator.md](docs/percolator.md)**.
 
@@ -33,7 +41,8 @@ See **[RELEASE.md](RELEASE.md)** for the v-next package (Alpenglow option, Hetzn
 - RPC: `https://rpc.clawdchain.trade`
 - WebSocket: `wss://rpc.clawdchain.trade`
 - Faucet: **https://faucet.clawdchain.trade** (69 CLAWD per wallet per 12h, 138 per IP per 12h, proof-of-work anti-bot)
-- Genesis hash: `7nu7q65M7dhJu9j6Zo1XkL4VRfMdg8544Xy62KR8TiHY`
+- Genesis hash: `BjbvUdJLreJzCfVEQZHi3D4QttNyp3P5mNXEvHw56kBP` (Alpenglow genesis, 2026-10-22; the earlier genesis was `7nu7q65M7dhJu9j6Zo1XkL4VRfMdg8544Xy62KR8TiHY`)
+- Alpenglow: https://clawdchain.trade/alpenglow · ORE mining: https://clawdchain.trade/ore
 
 ## Public RPC limits
 - ~40 requests / 10s per IP (batches count per call, max 10 per batch), 5 concurrent WebSockets per IP

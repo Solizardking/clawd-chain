@@ -1,0 +1,15 @@
+[package]
+name = "clawd-ore-cli"
+version = "0.1.0"
+edition = "2021"
+description = "Minimal ORE-on-clawd CLI: init, open, mine, status, claim"
+[[bin]]
+name = "clawd-ore"
+path = "src/main.rs"
+[dependencies]
+ore-api = { path = "../api" }
+drillx = { version = "2.2", features = ["solana"] }
+solana-client = "~2.1"
+solana-sdk = "~2.1"
+spl-associated-token-account = { version = "^6", features = ["no-entrypoint"] }
+steel = { features = ["spl"], version = "3.0" }

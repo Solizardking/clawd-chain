@@ -93,6 +93,8 @@ http.createServer((req, res) => {
   if (p === '/' || (launchSite && p === '/index.html')) p = launchSite ? '/launchpad.html' : '/index.html';
   else if (p === '/readme' || p === '/readme/' || p === '/wallet' || p === '/wallet/') p = '/readme.html';
   else if (p === '/launchpad' || p === '/launchpad/') p = '/launchpad.html';
+  else if (p === '/alpenglow' || p === '/alpenglow/') p = '/alpenglow.html';
+  else if (p === '/ore' || p === '/ore/') p = '/ore.html';
   else if (/^\/(explorer|tx|address|block)(\/|$)/.test(p)) p = '/explorer.html';
   const f = path.join(__dirname, 'public', path.normalize(p).replace(/^(\.\.[\/\\])+/, ''));
   fs.readFile(f, (e, d) => { if (e) { res.writeHead(404, { 'content-type': 'text/plain' }); return res.end('not found'); }

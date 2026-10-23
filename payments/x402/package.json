@@ -1,0 +1,16 @@
+{
+  "name": "clawd-x402",
+  "private": true,
+  "type": "module",
+  "description": "Self-hosted x402 payment gate + facilitator for clawd chain, built on Faremeter",
+  "scripts": {
+    "facilitator": "node facilitator.mjs",
+    "gate": "node gate.mjs",
+    "e2e": "node e2e.mjs"
+  },
+  "dependencies": {
+    "@faremeter/facilitator": "*", "@faremeter/fetch": "*", "@faremeter/info": "*", "@faremeter/middleware": "*",
+    "@faremeter/payment-solana": "*", "@faremeter/wallet-solana": "*", "@hono/node-server": "^1.13.0", "hono": "^4.6.0",
+    "@solana/web3.js": "^1.98.0", "@solana/spl-token": "^0.4.9"
+  }
+}

@@ -1,0 +1,7 @@
+# Reproduces today's clawd chain: one Hetzner host, Alpenglow from genesis.
+config:
+  clawd:mode: single
+  clawd:agaveVersion: "4.3.2"
+  clawd:hosts: '["95.216.154.157"]'
+  remote:user: root
+  # remote:privateKey: set with `pulumi config set --secret remote:privateKey < key`; never commit it

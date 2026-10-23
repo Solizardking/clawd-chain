@@ -1,0 +1,7 @@
+# Multi-node genesis design (prereq for Firedancer). Hosts are placeholders until boxes exist.
+config:
+  clawd:mode: multi
+  clawd:agaveVersion: "4.3.2"
+  clawd:hosts: '["10.0.0.1","10.0.0.2","10.0.0.3"]'
+  clawd:firedancerHost: "10.0.0.4"
+  remote:user: root
