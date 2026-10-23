@@ -1,0 +1,92 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>clawd chain · ORE mining</title><meta name="description" content="ORE v3.1.0 proof-of-work mining, ported to clawd chain (Agave 4.3.2, Alpenglow). Test token cORE.">
+<link rel="icon" href="/logo.svg"><link rel="stylesheet" href="/style.css">
+<style>
+.ag h1{font-size:42px;line-height:1.05;margin:0 0 8px}.ag h2{margin:28px 0 8px}
+.ag p,.ag li{line-height:1.6}.ag code{word-break:break-all}
+.ag pre{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px;overflow:auto}
+.live{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.live .card b{display:block;font-size:26px;margin-top:4px}.live small{color:var(--dim)}
+@media(max-width:860px){.live{grid-template-columns:1fr}.ag h1{font-size:32px}}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:99px;border:1px solid rgba(255,255,255,.2);margin-left:6px;vertical-align:middle}
+.tag.test{background:rgba(255,190,60,.15);border-color:rgba(255,190,60,.5)}.tag.soon{background:rgba(120,160,255,.15);border-color:rgba(120,160,255,.5)}
+.ag table{border-collapse:collapse;width:100%}.ag td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:top}
+.diag{width:100%;max-width:900px;height:auto;display:block;margin:12px 0}
+</style></head><body>
+<nav><a class="brand" href="/"><img src="/logo.svg" width="34" alt=""> clawd</a><span class="sp"></span><a href="/">Home</a><a href="/explorer">Explorer</a><a class="btn hot" href="https://launch.clawdchain.trade">Launchpad</a><a href="https://launch.clawdchain.trade" hidden>Launchpad</a><a href="/readme">Wallet</a><a href="/alpenglow">Alpenglow</a><a class="on" href="/ore">ORE</a><a href="https://faucet.clawdchain.trade">Faucet</a><a href="https://api.clawdchain.trade">API</a><a href="https://github.com/Solizardking/clawd-chain">GitHub</a></nav>
+<div class="wrap ag">
+<h1>ORE mining on clawd chain</h1>
+<p>We ported <b>ORE v3.1.0</b>, the proof-of-work version of ORE, to clawd chain (Agave 4.3.2 with <a href="/alpenglow">Alpenglow</a>). You hash on your own machine, submit proofs on-chain, and claim the <b>cORE</b> reward token. <span class="tag test">cORE is a test token with no value</span></p>
+<div class="live">
+<div class="card stat"><small>cORE supply mined</small><b id="o-sup">…</b></div>
+<div class="card stat"><small>ORE program</small><b id="o-prog">…</b></div>
+<div class="card stat"><small>Finalized slot</small><b id="o-slot">…</b></div>
+</div>
+<p><small id="o-meta">Live from the RPC, refreshes every few seconds.</small></p>
+
+<h2>Deployed addresses</h2>
+<table>
+<tr><td>ORE program</td><td><a href="https://explorer.clawdchain.trade/address/2QHkgHHPxFUak2MC16QvB6zh7aeKQn1ehEn1sEsTaaCP"><code>2QHkgHHPxFUak2MC16QvB6zh7aeKQn1ehEn1sEsTaaCP</code></a></td></tr>
+<tr><td>Noop program</td><td><a href="https://explorer.clawdchain.trade/address/EHLnnhgdE1tq4bvLaTUaqs6bbmMMT6q88t1ZxDxLcwts"><code>EHLnnhgdE1tq4bvLaTUaqs6bbmMMT6q88t1ZxDxLcwts</code></a></td></tr>
+<tr><td>cORE mint <span class="tag test">test token</span></td><td><a href="https://explorer.clawdchain.trade/address/5e2NA8PVis1QCx3aT5qmdFDW3KFJFnpY7WCf26Ds8XT7"><code>5e2NA8PVis1QCx3aT5qmdFDW3KFJFnpY7WCf26Ds8XT7</code></a><br><small>11 decimals, 5M max supply</small></td></tr>
+</table>
+
+<h2>How mining works</h2>
+<svg class="diag" viewBox="0 0 900 230" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif" font-size="14">
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#ff7a59"/></marker></defs>
+<g fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.25)">
+<rect x="10" y="20" width="150" height="80" rx="10"/><rect x="200" y="20" width="150" height="80" rx="10"/><rect x="390" y="20" width="150" height="80" rx="10"/><rect x="580" y="20" width="150" height="80" rx="10"/><rect x="760" y="20" width="130" height="80" rx="10"/>
+<rect x="200" y="140" width="530" height="70" rx="10" stroke-dasharray="5 4"/></g>
+<g fill="#fff" text-anchor="middle">
+<text x="85" y="52" font-weight="700">1. open</text><text x="85" y="74" fill="#aaa" font-size="12">create proof account</text>
+<text x="275" y="52" font-weight="700">2. hash</text><text x="275" y="74" fill="#aaa" font-size="12">drillx off-chain,</text><text x="275" y="90" fill="#aaa" font-size="12">find a nonce</text>
+<text x="465" y="52" font-weight="700">3. mine</text><text x="465" y="74" fill="#aaa" font-size="12">submit hash; program</text><text x="465" y="90" fill="#aaa" font-size="12">checks difficulty</text>
+<text x="655" y="52" font-weight="700">4. reward</text><text x="655" y="74" fill="#aaa" font-size="12">bus pays cORE into</text><text x="655" y="90" fill="#aaa" font-size="12">proof balance</text>
+<text x="825" y="52" font-weight="700">5. claim</text><text x="825" y="74" fill="#aaa" font-size="12">to your cORE</text><text x="825" y="90" fill="#aaa" font-size="12">token account</text>
+<text x="465" y="170" font-weight="700">Epoch reset (every ~5 min)</text><text x="465" y="192" fill="#aaa" font-size="12">8 buses refilled from treasury · reward rate adjusts toward target</text></g>
+<g stroke="#ff7a59" stroke-width="2" fill="none" marker-end="url(#ar)"><path d="M160 60H198"/><path d="M350 60H388"/><path d="M540 60H578"/><path d="M730 60H758"/><path d="M465 138V102"/></g>
+<path d="M465 100 C 465 120, 275 120, 275 102" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="4 3" marker-end="url(#ar)"/>
+</svg>
+<ul>
+<li><b>Hash.</b> Your machine runs the <a href="https://github.com/regolith-labs/drillx">drillx</a> hash over your proof's current challenge and a nonce. No GPU farm needed, and the protocol accepts about one submission per minute per proof.</li>
+<li><b>Difficulty.</b> Difficulty is the number of leading zero bits in the hash. The program checks it on-chain and rejects anything under the minimum. Higher difficulty earns a larger reward (rewards scale by 2<sup>difficulty − min</sup>).</li>
+<li><b>Rewards.</b> Each valid hash is paid from one of 8 <i>buses</i> into your proof balance. Every ~5-minute epoch a <code>reset</code> refills the buses from the treasury and adjusts the base reward rate toward the target emission.</li>
+<li><b>Claim.</b> <code>claim</code> moves your proof balance into your cORE token account.</li>
+<li><b>Noop.</b> <code>mine</code> verifies the proof through a small noop program via instruction introspection. clawd chain uses its own noop at <code>EHLnnh…wcts</code>.</li>
+</ul>
+
+<h2>Proof it works</h2>
+<p>On October 22, 2026 a test wallet opened a proof, mined <b>3 hashes</b> (difficulties 10, 11 and 9) and claimed <b>57,344 grains</b> of cORE (0.00000057344 cORE at 11 decimals):</p>
+<p><a href="https://explorer.clawdchain.trade/tx/4ZuZNXZFzfDiz5hSCRasEzxyozZagHwoGVzrZTX8uVNZuPTMDyR8CBcox1h5rfj3FfhfFAyiJejXZTeNkgW5wPJ8"><code>claim tx 4ZuZNXZF…wPJ8</code></a></p>
+
+<h2>Try it</h2>
+<ol>
+<li>Get CLAWD for fees from the <a href="https://faucet.clawdchain.trade">faucet</a> (69 CLAWD per wallet every 12h).</li>
+<li>Build the CLI from <a href="https://github.com/Solizardking/clawd-chain/tree/roadmap/ore/programs/ore"><code>programs/ore</code> on branch <code>roadmap/ore</code></a>.</li>
+<li>Open a proof, mine, and claim:</li>
+</ol>
+<pre>git clone -b roadmap/ore https://github.com/Solizardking/clawd-chain
+cd clawd-chain/programs/ore
+OPENSSL_NO_VENDOR=1 cargo +stable build --release -p clawd-ore-cli
+
+export KEYPAIR=~/my-wallet.json RPC=https://rpc.clawdchain.trade
+./target/release/clawd-ore open      # create your proof account
+./target/release/clawd-ore mine 3    # ~1 hash/min, auto-resets each 5-min epoch
+./target/release/clawd-ore status    # proof balance
+./target/release/clawd-ore claim     # proof balance → your cORE token account</pre>
+<p><small>The repo may be private while this is in review. If the link doesn't open for you, it isn't public yet.</small></p>
+
+<h2>Why the v3.1.0 line</h2>
+<p>Current upstream ORE (v3.8.x) replaced hash proof-of-work with a board game where miners deploy SOL onto squares, and it depends on several extra programs. We ported the last proof-of-work release (upstream commit <code>c89f73e8</code>, Apache-2.0) so anyone can mine with a CPU. All PDAs derive from the new program ID, so the mint is new. The native CLAWD coin is untouched.</p>
+
+<h2>Coming soon</h2>
+<ul>
+<li><b>CLAWD rewards</b> <span class="tag soon">coming soon</span>: mine CLAWD instead of the cORE test token.</li>
+<li><b>Boosts</b> <span class="tag soon">coming soon</span>: multiply rewards for committed miners.</li>
+<li><b>Staking</b> <span class="tag soon">coming soon</span>: stake to earn a share of emissions.</li>
+<li>Admin hardening: move the upgrade authority from the test wallet to a dedicated key or multisig before any public rollout.</li>
+</ul>
+</div>
+<footer>clawd testnet · CLAWD and cORE have no monetary value · <a href="/alpenglow">Alpenglow</a> · <a href="/llms.txt">llms.txt</a></footer>
+<script src="/ore.js"></script>
+</body></html>

@@ -10,6 +10,7 @@
 - MCP (streamable HTTP, read-only): https://mcp.clawdchain.trade/mcp
 - Wallet README: https://clawdchain.trade/readme (same page as /wallet; local-custody Clawd Chain wallet)
 - Alpenglow: https://clawdchain.trade/alpenglow (Agave 4.3.2, Alpenglow SIMD-0326 active from epoch 0 since 2026-10-22; genesis BjbvUdJLreJzCfVEQZHi3D4QttNyp3P5mNXEvHw56kBP; program addresses unchanged)
+- ORE mining: https://clawdchain.trade/ore (ORE v3.1.0 proof-of-work port; program 2QHkgHHPxFUak2MC16QvB6zh7aeKQn1ehEn1sEsTaaCP; cORE test mint 5e2NA8PVis1QCx3aT5qmdFDW3KFJFnpY7WCf26Ds8XT7, no value)
 - Wallet source: https://github.com/Solizardking/clawd-chain-wallet
 - Source: https://github.com/Solizardking/clawd-chain
 
