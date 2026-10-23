@@ -20,6 +20,21 @@ if [ ! -f /data/ledger/genesis.bin ]; then
     --clone-upgradeable-program metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
   # Faucet key funded at genesis: FAUCET_PUBKEY is a fly secret (pubkey only).
   [ -n "$FAUCET_PUBKEY" ] && FUND="--mint $FAUCET_PUBKEY"
+  # Keep the old faucet address: pre-seed /data/seed/faucet-keypair.json (copied from the backup,
+  # never baked into the image). solana-test-validator reuses an existing ledger faucet keypair.
+  if [ -f /data/seed/faucet-keypair.json ]; then
+    cp /data/seed/faucet-keypair.json /data/ledger/faucet-keypair.json && chmod 600 /data/ledger/faucet-keypair.json
+  fi
+  # Re-create programs at genesis with the SAME ids and upgrade authorities from on-chain dumps.
+  # Manifest lines: <program_id> <file.so relative to PROGRAMS_DIR> <upgrade_authority_pubkey>
+  PROGRAMS_DIR=${PROGRAMS_DIR:-/data/programs}
+  if [ -f "$PROGRAMS_DIR/programs.manifest" ]; then
+    while read -r pid so auth; do
+      case "$pid" in ''|\#*) continue;; esac
+      [ -f "$PROGRAMS_DIR/$so" ] || { echo "missing $PROGRAMS_DIR/$so" >&2; exit 1; }
+      CLONE="$CLONE --upgradeable-program $pid $PROGRAMS_DIR/$so $auth"
+    done < "$PROGRAMS_DIR/programs.manifest"
+  fi
 fi
 solana-test-validator --ledger /data/ledger --bind-address 127.0.0.1 --alpenglow \
   --rpc-port 8899 --limit-blockstore-size ${LEDGER_LIMIT:-2000000} --quiet ${FUND:-} $CLONE &

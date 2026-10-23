@@ -4,6 +4,9 @@ services:
   validator:
     build: { context: ../.., dockerfile: deploy/alpenglow/Dockerfile }
     image: clawd-chain-validator-alpenglow
+    # Agave 4.3 asserts io_uring support at start; Docker's default seccomp profile blocks it
+    # (panic: assertion failed: io_uring_supported()). Verified on this host 2026-10-22.
+    security_opt: ["seccomp=unconfined"]
     volumes: !override ["clawd-ledger-alpenglow:/data"]
     environment:
       FAUCET_PUBKEY: ${FAUCET_PUBKEY}
