@@ -1,0 +1,3 @@
+name: clawd-chain-svmkit
+runtime: { name: nodejs, options: { typescript: true } }
+description: clawd chain (Agave 4.3.2 + Alpenglow) as code with SVMKit. Bare metal over SSH, no cloud resources.
