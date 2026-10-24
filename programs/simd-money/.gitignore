@@ -1,0 +1,10 @@
+/target/
+**/*.so
+.keys/
+*.json
+!Cargo.toml
+.env
+.env.*
+wallet.json
+keypair*
+buffer.json
