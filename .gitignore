@@ -23,3 +23,12 @@ percolator-prog/
 clawd-shield-main/build/
 clawd-shield-main/target/
 *.zkey
+
+# simd-money local secrets / build
+programs/simd-money/target/
+programs/simd-money/.keys/
+programs/simd-money/**/wallet.json
+scripts/simd-money/.keys/
+!programs/simd-money/package.json
+!programs/simd-money/demo-*-result.json
+!programs/simd-money/PROGRAM_ID.txt
